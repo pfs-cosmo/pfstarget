@@ -6,6 +6,7 @@ SELECT
 	
 	-- Galactic extinction for correction
 	f1.a_g, f1.a_r, f1.a_i, f1.a_z, f1.a_y,
+	
 
 	-- Number of images contributing at the object center
     -- Useful to quantify the depth of the photometry
@@ -60,6 +61,17 @@ SELECT
 	f1.i_cmodel_fluxerr as i_cmodel_flux_err,
 	f1.z_cmodel_fluxerr as z_cmodel_flux_err,
 	f1.y_cmodel_fluxerr as y_cmodel_flux_err,
+
+	f1.g_cmodel_mag,
+	f1.r_cmodel_mag,
+	f1.i_cmodel_mag,
+	f1.z_cmodel_mag,
+	f1.y_cmodel_mag,
+	f1.g_cmodel_magerr as g_cmodel_mag_err,
+	f1.r_cmodel_magerr as r_cmodel_mag_err,
+	f1.i_cmodel_magerr as i_cmodel_mag_err,
+	f1.z_cmodel_magerr as z_cmodel_mag_err,
+	f1.y_cmodel_magerr as y_cmodel_mag_err,
 
 	-- 4. Flags for CModel photometry
 	-- If the flag is set to True, it means the photometry is not reliable (final model fit failed)
@@ -214,10 +226,12 @@ SELECT
 	f1.r_extendedness_value,
 	f1.i_extendedness_value,
 	f1.z_extendedness_value,
+	f1.y_extendedness_value,
 	f1.g_extendedness_flag,
 	f1.r_extendedness_flag,
 	f1.i_extendedness_flag,
 	f1.z_extendedness_flag,
+	f1.y_extendedness_flag,
 
     -- Blendedness and deblender-related diagnoses.
     m2.g_deblend_blendedness as g_blendedness,
@@ -320,6 +334,13 @@ SELECT
     msk.z_mask_brightstar_blooming,
     msk.z_mask_brightstar_ghost12,
     msk.z_mask_brightstar_ghost15
+
+	msk.y_mask_brightstar_halo,
+    msk.y_mask_brightstar_dip,
+    msk.y_mask_brightstar_ghost,
+    msk.y_mask_brightstar_blooming,
+    msk.y_mask_brightstar_ghost12,
+    msk.y_mask_brightstar_ghost15
 	
     -- I don't think the S23B photo-z is ready yet, so I will skip this part for now.
 	-- Mizuki photo-z information 
@@ -381,15 +402,22 @@ WHERE
        f1.isprimary
 	-- Region
 	-- This is for the COSMOS field
-	AND boxSearch(coord, 149.22484, 150.81303, 1.541319, 2.87744)
+	-- AND boxSearch(coord, 149.22484, 150.81303, 1.541319, 2.87744)
+
+    -- Tract 
+	AND m1.tract IN ({$tract})
+
 	-- Photometric cut
-	AND f1.i_cmodel_mag <= 23.5
+	-- Note: will do mag cut in post-processing
+	-- AND f1.i_cmodel_mag <= 23.5
 	AND NOT f1.i_cmodel_flag
 
 	-- Extendedness cut 
+	-- Note: this is done in target seleciton post-processing
     -- Note: need to think about this cut. Is it true that all potential PSF targets are extended objects?
 	-- AND f1.r_extendedness_value > 0
 	-- AND f1.i_extendedness_value > 0
+
 	-- Full-depth full-color cut
 	AND f1.g_inputcount_value >= 4
 	AND f1.r_inputcount_value >= 4
@@ -412,7 +440,6 @@ WHERE
 	AND NOT f1.y_pixelflags_edge
 
 	-- Not saturated at the center  
-
 	AND NOT f1.g_pixelflags_saturatedcenter
     AND NOT f1.r_pixelflags_saturatedcenter
     AND NOT f1.i_pixelflags_saturatedcenter
