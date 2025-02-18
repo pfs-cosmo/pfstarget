@@ -39,7 +39,7 @@ def main():
     parser.add_argument('--nomail', '-M', action='store_true',
                         help='suppress email notice')
     parser.add_argument('--release_year', '-r',
-                        choices='s15 s16 s17 s18 s19 s20 s21'.split(),
+                        choices='s15 s16 s17 s18 s19 s20 s21 s23'.split(),
                         required=True,
                         help='the release year')
     parser.add_argument('--password-env', default='HSC_SSP_CAS_PASSWORD',
@@ -81,7 +81,7 @@ def main():
         ngroups =   20
         tractname=  'fieldTractInfoS21.csv'
     elif 's23' in release_year:
-        release_version =   'dr4-citus'
+        release_version =   'dr4'
         ngroups =   20
         tractname=  'TractInfoS23.csv'
     

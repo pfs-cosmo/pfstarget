@@ -344,20 +344,20 @@ SELECT
     msk.z_mask_brightstar_ghost,
     msk.z_mask_brightstar_blooming,
     msk.z_mask_brightstar_ghost12,
-    msk.z_mask_brightstar_ghost15
+    msk.z_mask_brightstar_ghost15,
 
 	msk.y_mask_brightstar_halo,
     msk.y_mask_brightstar_dip,
     msk.y_mask_brightstar_ghost,
     msk.y_mask_brightstar_blooming,
     msk.y_mask_brightstar_ghost12,
-    msk.y_mask_brightstar_ghost15
+    msk.y_mask_brightstar_ghost15,
 
 	-- 6. y-band flags
-	f2.y_sdsscentroid_flag
-	f1.y_pixelflags_edge
-    f1.y_pixelflags_saturatedcenter
-	f1.y_pixelflags_interpolatedcenter
+	f2.y_sdsscentroid_flag,
+	f1.y_pixelflags_edge,
+    f1.y_pixelflags_saturatedcenter,
+	f1.y_pixelflags_interpolatedcenter,
 	f1.y_pixelflags_crcenter
 	
     -- I don't think the S23B photo-z is ready yet, so I will skip this part for now.
