@@ -93,6 +93,17 @@ SELECT
 	f2.i_psfflux_fluxerr as i_psf_flux_err,
 	f2.z_psfflux_fluxerr as z_psf_flux_err,
 	f2.y_psfflux_fluxerr as y_psf_flux_err,
+
+	f2.g_psfflux_mag as g_psf_mag,
+	f2.r_psfflux_mag as r_psf_mag,
+	f2.i_psfflux_mag as i_psf_mag,
+	f2.z_psfflux_mag as z_psf_mag,
+	f2.y_psfflux_mag as y_psf_mag,
+    f2.g_psfflux_magerr as g_psf_mag_err,
+	f2.r_psfflux_magerr as r_psf_mag_err,
+	f2.i_psfflux_magerr as i_psf_mag_err,
+	f2.z_psfflux_magerr as z_psf_mag_err,
+	f2.y_psfflux_magerr as y_psf_mag_err,
  
 	-- PSF photometry flag (for quality cut later)
 	f2.g_psfflux_flag as g_psf_flag,
@@ -197,29 +208,29 @@ SELECT
     f6.y_undeblended_gaapflux_1_15x_optimal_fluxerr as y_undeblended_gaap_1_15x_optimal_flux_err,
 	
 	-- SDSS Shape without PSF correction (Using i-band; can use others too)
-	f2.i_sdssshape_shape11 as i_sdss_shape_11,
-	f2.i_sdssshape_shape12 as i_sdss_shape_12,
-	f2.i_sdssshape_shape22 as i_sdss_shape_22,
-	f2.i_sdssshape_shape11err as i_sdss_shape_11_err,
-	f2.i_sdssshape_shape12err as i_sdss_shape_12_err,
-	f2.i_sdssshape_shape22err as i_sdss_shape_22_err,
+	-- f2.i_sdssshape_shape11 as i_sdss_shape_11,
+	-- f2.i_sdssshape_shape12 as i_sdss_shape_12,
+	-- f2.i_sdssshape_shape22 as i_sdss_shape_22,
+	-- f2.i_sdssshape_shape11err as i_sdss_shape_11_err,
+	-- f2.i_sdssshape_shape12err as i_sdss_shape_12_err,
+	-- f2.i_sdssshape_shape22err as i_sdss_shape_22_err,
 	
 	-- Shape of the CModel model (i & r-band)
     -- This takes the PSF convolution into account and one can recover the size, ellipticity, and position angle of the object from these three moments. 
     -- I like to use the exponential fit one because it is more stable.
-	m1.i_cmodel_exp_ellipse_11, 
-	m1.i_cmodel_exp_ellipse_22, 
-	m1.i_cmodel_exp_ellipse_12,
-	m1.i_cmodel_ellipse_11, 
-	m1.i_cmodel_ellipse_22, 
-	m1.i_cmodel_ellipse_12,
+	-- m1.i_cmodel_exp_ellipse_11, 
+	-- m1.i_cmodel_exp_ellipse_22, 
+	-- m1.i_cmodel_exp_ellipse_12,
+	-- m1.i_cmodel_ellipse_11, 
+	-- m1.i_cmodel_ellipse_22, 
+	-- m1.i_cmodel_ellipse_12,
 	
-	m1.r_cmodel_exp_ellipse_11, 
-	m1.r_cmodel_exp_ellipse_22, 
-	m1.r_cmodel_exp_ellipse_12,
-	m1.r_cmodel_ellipse_11, 
-	m1.r_cmodel_ellipse_22, 
-	m1.r_cmodel_ellipse_12,
+	-- m1.r_cmodel_exp_ellipse_11, 
+	-- m1.r_cmodel_exp_ellipse_22, 
+	-- m1.r_cmodel_exp_ellipse_12,
+	-- m1.r_cmodel_ellipse_11, 
+	-- m1.r_cmodel_ellipse_22, 
+	-- m1.r_cmodel_ellipse_12,
 
 	-- Extendedness of the object
 	f1.g_extendedness_value,
@@ -341,6 +352,13 @@ SELECT
     msk.y_mask_brightstar_blooming,
     msk.y_mask_brightstar_ghost12,
     msk.y_mask_brightstar_ghost15
+
+	-- 6. y-band flags
+	f2.y_sdsscentroid_flag
+	f1.y_pixelflags_edge
+    f1.y_pixelflags_saturatedcenter
+	f1.y_pixelflags_interpolatedcenter
+	f1.y_pixelflags_crcenter
 	
     -- I don't think the S23B photo-z is ready yet, so I will skip this part for now.
 	-- Mizuki photo-z information 
@@ -399,7 +417,7 @@ FROM
 	-- LEFT JOIN s23b_wide.photoz_demp as p3 USING (object_id)
 
 WHERE
-       f1.isprimary
+    f1.isprimary
 	-- Region
 	-- This is for the COSMOS field
 	-- AND boxSearch(coord, 149.22484, 150.81303, 1.541319, 2.87744)
@@ -423,40 +441,35 @@ WHERE
 	AND f1.r_inputcount_value >= 4
 	AND f1.i_inputcount_value >= 5
 	AND f1.z_inputcount_value >= 5
-	AND f1.y_inputcount_value >= 5
+
 
 	-- Not failed at finding the center
 	AND NOT f2.g_sdsscentroid_flag
 	AND NOT f2.r_sdsscentroid_flag
 	AND NOT f2.i_sdsscentroid_flag
 	AND NOT f2.z_sdsscentroid_flag
-	AND NOT f2.y_sdsscentroid_flag
 
 	-- The object's center is not outside the image
 	AND NOT f1.g_pixelflags_edge    
 	AND NOT f1.r_pixelflags_edge
 	AND NOT f1.i_pixelflags_edge
 	AND NOT f1.z_pixelflags_edge
-	AND NOT f1.y_pixelflags_edge
 
 	-- Not saturated at the center  
 	AND NOT f1.g_pixelflags_saturatedcenter
     AND NOT f1.r_pixelflags_saturatedcenter
     AND NOT f1.i_pixelflags_saturatedcenter
     AND NOT f1.z_pixelflags_saturatedcenter
-    AND NOT f1.y_pixelflags_saturatedcenter
 
 	-- The center is not interpolated
 	AND NOT f1.g_pixelflags_interpolatedcenter
 	AND NOT f1.r_pixelflags_interpolatedcenter
 	AND NOT f1.i_pixelflags_interpolatedcenter
 	AND NOT f1.z_pixelflags_interpolatedcenter
-	AND NOT f1.y_pixelflags_interpolatedcenter
 
 	-- The center is not affected by a cosmic ray
 	AND NOT f1.g_pixelflags_crcenter
     AND NOT f1.r_pixelflags_crcenter
     AND NOT f1.i_pixelflags_crcenter
     AND NOT f1.z_pixelflags_crcenter
-    AND NOT f1.y_pixelflags_crcenter
 ;
