@@ -27,40 +27,40 @@ SELECT
     -- I typically download the flux and err, but it is also possible to download the magnitude and err
     -- For my case, I like to get all the CModel fluxes, including the exponential and de Vaucouluer components as a cross-check.
 	-- 1. Exponential component photometry
-    f1.g_cmodel_exp_flux, 
-	f1.r_cmodel_exp_flux, 
-	f1.i_cmodel_exp_flux, 
-	f1.z_cmodel_exp_flux, 
-	f1.y_cmodel_exp_flux, 
-	f1.g_cmodel_exp_fluxerr as g_cmodel_exp_flux_err,
-	f1.r_cmodel_exp_fluxerr as r_cmodel_exp_flux_err,
-	f1.i_cmodel_exp_fluxerr as i_cmodel_exp_flux_err,
-	f1.z_cmodel_exp_fluxerr as z_cmodel_exp_flux_err,
-	f1.y_cmodel_exp_fluxerr as y_cmodel_exp_flux_err,
+    -- f1.g_cmodel_exp_flux, 
+	-- f1.r_cmodel_exp_flux, 
+	-- f1.i_cmodel_exp_flux, 
+	-- f1.z_cmodel_exp_flux, 
+	-- f1.y_cmodel_exp_flux, 
+	-- f1.g_cmodel_exp_fluxerr as g_cmodel_exp_flux_err,
+	-- f1.r_cmodel_exp_fluxerr as r_cmodel_exp_flux_err,
+	-- f1.i_cmodel_exp_fluxerr as i_cmodel_exp_flux_err,
+	-- f1.z_cmodel_exp_fluxerr as z_cmodel_exp_flux_err,
+	-- f1.y_cmodel_exp_fluxerr as y_cmodel_exp_flux_err,
  
 	-- 2. de Vaucouluer component photometry
-	f1.g_cmodel_dev_flux, 
-	f1.r_cmodel_dev_flux, 
-	f1.i_cmodel_dev_flux, 
-	f1.z_cmodel_dev_flux, 
-	f1.y_cmodel_dev_flux, 
-	f1.g_cmodel_dev_fluxerr as g_cmodel_dev_flux_err,
-	f1.r_cmodel_dev_fluxerr as r_cmodel_dev_flux_err,
-	f1.i_cmodel_dev_fluxerr as i_cmodel_dev_flux_err,
-	f1.z_cmodel_dev_fluxerr as z_cmodel_dev_flux_err,
-	f1.y_cmodel_dev_fluxerr as y_cmodel_dev_flux_err,
+	-- f1.g_cmodel_dev_flux, 
+	-- f1.r_cmodel_dev_flux, 
+	-- f1.i_cmodel_dev_flux, 
+	-- f1.z_cmodel_dev_flux, 
+	-- f1.y_cmodel_dev_flux, 
+	-- f1.g_cmodel_dev_fluxerr as g_cmodel_dev_flux_err,
+	-- f1.r_cmodel_dev_fluxerr as r_cmodel_dev_flux_err,
+	-- f1.i_cmodel_dev_fluxerr as i_cmodel_dev_flux_err,
+	-- f1.z_cmodel_dev_fluxerr as z_cmodel_dev_flux_err,
+	-- f1.y_cmodel_dev_fluxerr as y_cmodel_dev_flux_err,
 	
 	-- 3. CModel photometry
-	f1.g_cmodel_flux, 
-	f1.r_cmodel_flux, 
-	f1.i_cmodel_flux, 
-	f1.z_cmodel_flux, 
-	f1.y_cmodel_flux, 
-	f1.g_cmodel_fluxerr as g_cmodel_flux_err,
-	f1.r_cmodel_fluxerr as r_cmodel_flux_err,
-	f1.i_cmodel_fluxerr as i_cmodel_flux_err,
-	f1.z_cmodel_fluxerr as z_cmodel_flux_err,
-	f1.y_cmodel_fluxerr as y_cmodel_flux_err,
+	-- f1.g_cmodel_flux, 
+	-- f1.r_cmodel_flux, 
+	-- f1.i_cmodel_flux, 
+	-- f1.z_cmodel_flux, 
+	-- f1.y_cmodel_flux, 
+	-- f1.g_cmodel_fluxerr as g_cmodel_flux_err,
+	-- f1.r_cmodel_fluxerr as r_cmodel_flux_err,
+	-- f1.i_cmodel_fluxerr as i_cmodel_flux_err,
+	-- f1.z_cmodel_fluxerr as z_cmodel_flux_err,
+	-- f1.y_cmodel_fluxerr as y_cmodel_flux_err,
 
 	f1.g_cmodel_mag,
 	f1.r_cmodel_mag,
@@ -83,16 +83,16 @@ SELECT
 	
 	-- PSF photometry
     -- I always rename the PSF flux columns, the original names are stupid
-	f2.g_psfflux_flux as g_psf_flux, 
-	f2.r_psfflux_flux as r_psf_flux, 
-	f2.i_psfflux_flux as i_psf_flux, 
-	f2.z_psfflux_flux as z_psf_flux, 
-	f2.y_psfflux_flux as y_psf_flux, 
-	f2.g_psfflux_fluxerr as g_psf_flux_err,
-	f2.r_psfflux_fluxerr as r_psf_flux_err,
-	f2.i_psfflux_fluxerr as i_psf_flux_err,
-	f2.z_psfflux_fluxerr as z_psf_flux_err,
-	f2.y_psfflux_fluxerr as y_psf_flux_err,
+	-- f2.g_psfflux_flux as g_psf_flux, 
+	-- f2.r_psfflux_flux as r_psf_flux, 
+	-- f2.i_psfflux_flux as i_psf_flux, 
+	-- f2.z_psfflux_flux as z_psf_flux, 
+	-- f2.y_psfflux_flux as y_psf_flux, 
+	-- f2.g_psfflux_fluxerr as g_psf_flux_err,
+	-- f2.r_psfflux_fluxerr as r_psf_flux_err,
+	-- f2.i_psfflux_fluxerr as i_psf_flux_err,
+	-- f2.z_psfflux_fluxerr as z_psf_flux_err,
+	-- f2.y_psfflux_fluxerr as y_psf_flux_err,
 
 	f2.g_psfflux_mag as g_psf_mag,
 	f2.r_psfflux_mag as r_psf_mag,
@@ -115,97 +115,97 @@ SELECT
 	-- PSF-corrected aperture photometry
 	-- 2_15: 1.1 arcsec seeing; 1.5 arcsec diameter aperture
     -- This is the "safe choice". It is possible that a different version works the best for PFS target selection. But using a better common seeing might not work for a small fraction of the HSC footprint.
-	f4.g_convolvedflux_2_15_flux as g_convolved_aper_2_15_flux, 
-	f4.r_convolvedflux_2_15_flux as r_convolved_aper_2_15_flux, 
-	f4.i_convolvedflux_2_15_flux as i_convolved_aper_2_15_flux, 
-	f4.z_convolvedflux_2_15_flux as z_convolved_aper_2_15_flux, 
-	f4.y_convolvedflux_2_15_flux as y_convolved_aper_2_15_flux, 
+	-- f4.g_convolvedflux_2_15_flux as g_convolved_aper_2_15_flux, 
+	-- f4.r_convolvedflux_2_15_flux as r_convolved_aper_2_15_flux, 
+	-- f4.i_convolvedflux_2_15_flux as i_convolved_aper_2_15_flux, 
+	-- f4.z_convolvedflux_2_15_flux as z_convolved_aper_2_15_flux, 
+	-- f4.y_convolvedflux_2_15_flux as y_convolved_aper_2_15_flux, 
  
-	f4.g_convolvedflux_2_15_fluxerr as g_convolved_aper_2_15_flux_err,
-	f4.r_convolvedflux_2_15_fluxerr as r_convolved_aper_2_15_flux_err,
-	f4.i_convolvedflux_2_15_fluxerr as i_convolved_aper_2_15_flux_err,
-	f4.z_convolvedflux_2_15_fluxerr as z_convolved_aper_2_15_flux_err,
-	f4.y_convolvedflux_2_15_fluxerr as y_convolved_aper_2_15_flux_err,
+	-- f4.g_convolvedflux_2_15_fluxerr as g_convolved_aper_2_15_flux_err,
+	-- f4.r_convolvedflux_2_15_fluxerr as r_convolved_aper_2_15_flux_err,
+	-- f4.i_convolvedflux_2_15_fluxerr as i_convolved_aper_2_15_flux_err,
+	-- f4.z_convolvedflux_2_15_fluxerr as z_convolved_aper_2_15_flux_err,
+	-- f4.y_convolvedflux_2_15_fluxerr as y_convolved_aper_2_15_flux_err,
  
-	f4.g_convolvedflux_2_15_flag as g_convolved_aper_2_15_flag,
-	f4.r_convolvedflux_2_15_flag as r_convolved_aper_2_15_flag,
-	f4.i_convolvedflux_2_15_flag as i_convolved_aper_2_15_flag,
-	f4.z_convolvedflux_2_15_flag as z_convolved_aper_2_15_flag,
-	f4.y_convolvedflux_2_15_flag as y_convolved_aper_2_15_flag,
+	-- f4.g_convolvedflux_2_15_flag as g_convolved_aper_2_15_flag,
+	-- f4.r_convolvedflux_2_15_flag as r_convolved_aper_2_15_flag,
+	-- f4.i_convolvedflux_2_15_flag as i_convolved_aper_2_15_flag,
+	-- f4.z_convolvedflux_2_15_flag as z_convolved_aper_2_15_flag,
+	-- f4.y_convolvedflux_2_15_flag as y_convolved_aper_2_15_flag,
 	
 	-- PSF-corrected aperture photometry **before deblending**
     -- The comparison between the deblended and undeblended fluxes can be used to identify blended objects
 	-- 2_15: 1.1 arcsec seeing; 1.5 arcsec diamter aperture
-	f5.g_undeblended_convolvedflux_2_15_flux as g_undeblended_convolved_aper_2_15_flux, 
-	f5.r_undeblended_convolvedflux_2_15_flux as r_undeblended_convolved_aper_2_15_flux, 
-	f5.i_undeblended_convolvedflux_2_15_flux as i_undeblended_convolved_aper_2_15_flux, 
-	f5.z_undeblended_convolvedflux_2_15_flux as z_undeblended_convolved_aper_2_15_flux, 
-	f5.y_undeblended_convolvedflux_2_15_flux as y_undeblended_convolved_aper_2_15_flux, 
+	-- f5.g_undeblended_convolvedflux_2_15_flux as g_undeblended_convolved_aper_2_15_flux, 
+	-- f5.r_undeblended_convolvedflux_2_15_flux as r_undeblended_convolved_aper_2_15_flux, 
+	-- f5.i_undeblended_convolvedflux_2_15_flux as i_undeblended_convolved_aper_2_15_flux, 
+	-- f5.z_undeblended_convolvedflux_2_15_flux as z_undeblended_convolved_aper_2_15_flux, 
+	-- f5.y_undeblended_convolvedflux_2_15_flux as y_undeblended_convolved_aper_2_15_flux, 
  
-	f5.g_undeblended_convolvedflux_2_15_fluxerr as g_undeblended_convolved_aper_2_15_flux_err,
-	f5.r_undeblended_convolvedflux_2_15_fluxerr as r_undeblended_convolved_aper_2_15_flux_err,
-	f5.i_undeblended_convolvedflux_2_15_fluxerr as i_undeblended_convolved_aper_2_15_flux_err,
-	f5.z_undeblended_convolvedflux_2_15_fluxerr as z_undeblended_convolved_aper_2_15_flux_err,
-	f5.y_undeblended_convolvedflux_2_15_fluxerr as y_undeblended_convolved_aper_2_15_flux_err,
+	-- f5.g_undeblended_convolvedflux_2_15_fluxerr as g_undeblended_convolved_aper_2_15_flux_err,
+	-- f5.r_undeblended_convolvedflux_2_15_fluxerr as r_undeblended_convolved_aper_2_15_flux_err,
+	-- f5.i_undeblended_convolvedflux_2_15_fluxerr as i_undeblended_convolved_aper_2_15_flux_err,
+	-- f5.z_undeblended_convolvedflux_2_15_fluxerr as z_undeblended_convolved_aper_2_15_flux_err,
+	-- f5.y_undeblended_convolvedflux_2_15_fluxerr as y_undeblended_convolved_aper_2_15_flux_err,
  
-	f5.g_undeblended_convolvedflux_2_15_flag as g_undeblended_convolved_aper_2_15_flag,
-	f5.r_undeblended_convolvedflux_2_15_flag as r_undeblended_convolved_aper_2_15_flag,
-	f5.i_undeblended_convolvedflux_2_15_flag as i_undeblended_convolved_aper_2_15_flag,
-	f5.z_undeblended_convolvedflux_2_15_flag as z_undeblended_convolved_aper_2_15_flag,
-	f5.y_undeblended_convolvedflux_2_15_flag as y_undeblended_convolved_aper_2_15_flag,
+	-- f5.g_undeblended_convolvedflux_2_15_flag as g_undeblended_convolved_aper_2_15_flag,
+	-- f5.r_undeblended_convolvedflux_2_15_flag as r_undeblended_convolved_aper_2_15_flag,
+	-- f5.i_undeblended_convolvedflux_2_15_flag as i_undeblended_convolved_aper_2_15_flag,
+	-- f5.z_undeblended_convolvedflux_2_15_flag as z_undeblended_convolved_aper_2_15_flag,
+	-- f5.y_undeblended_convolvedflux_2_15_flag as y_undeblended_convolved_aper_2_15_flag,
 
     -- GaaP photometry: also very good for photo-z and other color-focused applications. 
     -- The _1_15x_1_5 means: Flux with 1.0 aperture after multiplying the seeing by 1.15
-    f6.g_gaapflux_1_15x_1_5_flux as g_gaap_1_15x_1_5_flux,
-    f6.r_gaapflux_1_15x_1_5_flux as r_gaap_1_15x_1_5_flux,
-    f6.i_gaapflux_1_15x_1_5_flux as i_gaap_1_15x_1_5_flux,
-    f6.z_gaapflux_1_15x_1_5_flux as z_gaap_1_15x_1_5_flux,
-    f6.y_gaapflux_1_15x_1_5_flux as y_gaap_1_15x_1_5_flux,
+    -- f6.g_gaapflux_1_15x_1_5_flux as g_gaap_1_15x_1_5_flux,
+    -- f6.r_gaapflux_1_15x_1_5_flux as r_gaap_1_15x_1_5_flux,
+    -- f6.i_gaapflux_1_15x_1_5_flux as i_gaap_1_15x_1_5_flux,
+    -- f6.z_gaapflux_1_15x_1_5_flux as z_gaap_1_15x_1_5_flux,
+    -- f6.y_gaapflux_1_15x_1_5_flux as y_gaap_1_15x_1_5_flux,
 
-    f6.g_gaapflux_1_15x_1_5_fluxerr as g_gaap_1_15x_1_5_flux_err,
-    f6.r_gaapflux_1_15x_1_5_fluxerr as r_gaap_1_15x_1_5_flux_err,
-    f6.i_gaapflux_1_15x_1_5_fluxerr as i_gaap_1_15x_1_5_flux_err,
-    f6.z_gaapflux_1_15x_1_5_fluxerr as z_gaap_1_15x_1_5_flux_err,
-    f6.y_gaapflux_1_15x_1_5_fluxerr as y_gaap_1_15x_1_5_flux_err,
+    -- f6.g_gaapflux_1_15x_1_5_fluxerr as g_gaap_1_15x_1_5_flux_err,
+    -- f6.r_gaapflux_1_15x_1_5_fluxerr as r_gaap_1_15x_1_5_flux_err,
+    -- f6.i_gaapflux_1_15x_1_5_fluxerr as i_gaap_1_15x_1_5_flux_err,
+    -- f6.z_gaapflux_1_15x_1_5_fluxerr as z_gaap_1_15x_1_5_flux_err,
+    -- f6.y_gaapflux_1_15x_1_5_fluxerr as y_gaap_1_15x_1_5_flux_err,
 
     -- GaaP also provides an optimal aperture
-    f6.g_gaapflux_1_15x_optimal_flux as g_gaap_1_15x_optimal_flux,
-    f6.r_gaapflux_1_15x_optimal_flux as r_gaap_1_15x_optimal_flux,
-    f6.i_gaapflux_1_15x_optimal_flux as i_gaap_1_15x_optimal_flux,
-    f6.z_gaapflux_1_15x_optimal_flux as z_gaap_1_15x_optimal_flux,
-    f6.y_gaapflux_1_15x_optimal_flux as y_gaap_1_15x_optimal_flux,
+    -- f6.g_gaapflux_1_15x_optimal_flux as g_gaap_1_15x_optimal_flux,
+    -- f6.r_gaapflux_1_15x_optimal_flux as r_gaap_1_15x_optimal_flux,
+    -- f6.i_gaapflux_1_15x_optimal_flux as i_gaap_1_15x_optimal_flux,
+    -- f6.z_gaapflux_1_15x_optimal_flux as z_gaap_1_15x_optimal_flux,
+    -- f6.y_gaapflux_1_15x_optimal_flux as y_gaap_1_15x_optimal_flux,
 
-    f6.g_gaapflux_1_15x_optimal_fluxerr as g_gaap_1_15x_optimal_flux_err,
-    f6.r_gaapflux_1_15x_optimal_fluxerr as r_gaap_1_15x_optimal_flux_err,
-    f6.i_gaapflux_1_15x_optimal_fluxerr as i_gaap_1_15x_optimal_flux_err,
-    f6.z_gaapflux_1_15x_optimal_fluxerr as z_gaap_1_15x_optimal_flux_err,
-    f6.y_gaapflux_1_15x_optimal_fluxerr as y_gaap_1_15x_optimal_flux_err,
+    -- f6.g_gaapflux_1_15x_optimal_fluxerr as g_gaap_1_15x_optimal_flux_err,
+    -- f6.r_gaapflux_1_15x_optimal_fluxerr as r_gaap_1_15x_optimal_flux_err,
+    -- f6.i_gaapflux_1_15x_optimal_fluxerr as i_gaap_1_15x_optimal_flux_err,
+    -- f6.z_gaapflux_1_15x_optimal_fluxerr as z_gaap_1_15x_optimal_flux_err,
+    -- f6.y_gaapflux_1_15x_optimal_fluxerr as y_gaap_1_15x_optimal_flux_err,
 
     -- There is also a version of GaaP run on the undeblended footprints
-    f6.g_undeblended_gaapflux_1_15x_1_5_flux as g_undeblended_gaap_1_15x_1_5_flux,
-    f6.r_undeblended_gaapflux_1_15x_1_5_flux as r_undeblended_gaap_1_15x_1_5_flux,
-    f6.i_undeblended_gaapflux_1_15x_1_5_flux as i_undeblended_gaap_1_15x_1_5_flux,
-    f6.z_undeblended_gaapflux_1_15x_1_5_flux as z_undeblended_gaap_1_15x_1_5_flux,
-    f6.y_undeblended_gaapflux_1_15x_1_5_flux as y_undeblended_gaap_1_15x_1_5_flux,
+    -- f6.g_undeblended_gaapflux_1_15x_1_5_flux as g_undeblended_gaap_1_15x_1_5_flux,
+    -- f6.r_undeblended_gaapflux_1_15x_1_5_flux as r_undeblended_gaap_1_15x_1_5_flux,
+    -- f6.i_undeblended_gaapflux_1_15x_1_5_flux as i_undeblended_gaap_1_15x_1_5_flux,
+    -- f6.z_undeblended_gaapflux_1_15x_1_5_flux as z_undeblended_gaap_1_15x_1_5_flux,
+    -- f6.y_undeblended_gaapflux_1_15x_1_5_flux as y_undeblended_gaap_1_15x_1_5_flux,
 
-    f6.g_undeblended_gaapflux_1_15x_1_5_fluxerr as g_undeblended_gaap_1_15x_1_5_flux_err,
-    f6.r_undeblended_gaapflux_1_15x_1_5_fluxerr as r_undeblended_gaap_1_15x_1_5_flux_err,
-    f6.i_undeblended_gaapflux_1_15x_1_5_fluxerr as i_undeblended_gaap_1_15x_1_5_flux_err,
-    f6.z_undeblended_gaapflux_1_15x_1_5_fluxerr as z_undeblended_gaap_1_15x_1_5_flux_err,
-    f6.y_undeblended_gaapflux_1_15x_1_5_fluxerr as y_undeblended_gaap_1_15x_1_5_flux_err,
+    -- f6.g_undeblended_gaapflux_1_15x_1_5_fluxerr as g_undeblended_gaap_1_15x_1_5_flux_err,
+    -- f6.r_undeblended_gaapflux_1_15x_1_5_fluxerr as r_undeblended_gaap_1_15x_1_5_flux_err,
+    -- f6.i_undeblended_gaapflux_1_15x_1_5_fluxerr as i_undeblended_gaap_1_15x_1_5_flux_err,
+    -- f6.z_undeblended_gaapflux_1_15x_1_5_fluxerr as z_undeblended_gaap_1_15x_1_5_flux_err,
+    -- f6.y_undeblended_gaapflux_1_15x_1_5_fluxerr as y_undeblended_gaap_1_15x_1_5_flux_err,
 
     -- Optimal aperture for the undeblended GaaP
-    f6.g_undeblended_gaapflux_1_15x_optimal_flux as g_undeblended_gaap_1_15x_optimal_flux,
-    f6.r_undeblended_gaapflux_1_15x_optimal_flux as r_undeblended_gaap_1_15x_optimal_flux,
-    f6.i_undeblended_gaapflux_1_15x_optimal_flux as i_undeblended_gaap_1_15x_optimal_flux,
-    f6.z_undeblended_gaapflux_1_15x_optimal_flux as z_undeblended_gaap_1_15x_optimal_flux,
-    f6.y_undeblended_gaapflux_1_15x_optimal_flux as y_undeblended_gaap_1_15x_optimal_flux,
+    -- f6.g_undeblended_gaapflux_1_15x_optimal_flux as g_undeblended_gaap_1_15x_optimal_flux,
+    -- f6.r_undeblended_gaapflux_1_15x_optimal_flux as r_undeblended_gaap_1_15x_optimal_flux,
+    -- f6.i_undeblended_gaapflux_1_15x_optimal_flux as i_undeblended_gaap_1_15x_optimal_flux,
+    -- f6.z_undeblended_gaapflux_1_15x_optimal_flux as z_undeblended_gaap_1_15x_optimal_flux,
+    -- f6.y_undeblended_gaapflux_1_15x_optimal_flux as y_undeblended_gaap_1_15x_optimal_flux,
 
-    f6.g_undeblended_gaapflux_1_15x_optimal_fluxerr as g_undeblended_gaap_1_15x_optimal_flux_err,
-    f6.r_undeblended_gaapflux_1_15x_optimal_fluxerr as r_undeblended_gaap_1_15x_optimal_flux_err,
-    f6.i_undeblended_gaapflux_1_15x_optimal_fluxerr as i_undeblended_gaap_1_15x_optimal_flux_err,
-    f6.z_undeblended_gaapflux_1_15x_optimal_fluxerr as z_undeblended_gaap_1_15x_optimal_flux_err,
-    f6.y_undeblended_gaapflux_1_15x_optimal_fluxerr as y_undeblended_gaap_1_15x_optimal_flux_err,
+    -- f6.g_undeblended_gaapflux_1_15x_optimal_fluxerr as g_undeblended_gaap_1_15x_optimal_flux_err,
+    -- f6.r_undeblended_gaapflux_1_15x_optimal_fluxerr as r_undeblended_gaap_1_15x_optimal_flux_err,
+    -- f6.i_undeblended_gaapflux_1_15x_optimal_fluxerr as i_undeblended_gaap_1_15x_optimal_flux_err,
+    -- f6.z_undeblended_gaapflux_1_15x_optimal_fluxerr as z_undeblended_gaap_1_15x_optimal_flux_err,
+    -- f6.y_undeblended_gaapflux_1_15x_optimal_fluxerr as y_undeblended_gaap_1_15x_optimal_flux_err,
 	
 	-- SDSS Shape without PSF correction (Using i-band; can use others too)
 	-- f2.i_sdssshape_shape11 as i_sdss_shape_11,
@@ -233,16 +233,16 @@ SELECT
 	-- m1.r_cmodel_ellipse_12,
 
 	-- Extendedness of the object
-	f1.g_extendedness_value,
-	f1.r_extendedness_value,
-	f1.i_extendedness_value,
-	f1.z_extendedness_value,
-	f1.y_extendedness_value,
-	f1.g_extendedness_flag,
-	f1.r_extendedness_flag,
-	f1.i_extendedness_flag,
-	f1.z_extendedness_flag,
-	f1.y_extendedness_flag,
+	-- f1.g_extendedness_value,
+	-- f1.r_extendedness_value,
+	-- f1.i_extendedness_value,
+	-- f1.z_extendedness_value,
+	-- f1.y_extendedness_value,
+	-- f1.g_extendedness_flag,
+	-- f1.r_extendedness_flag,
+	-- f1.i_extendedness_flag,
+	-- f1.z_extendedness_flag,
+	-- f1.y_extendedness_flag,
 
     -- Blendedness and deblender-related diagnoses.
     m2.g_deblend_blendedness as g_blendedness,
@@ -423,11 +423,12 @@ WHERE
 	-- AND boxSearch(coord, 149.22484, 150.81303, 1.541319, 2.87744)
 
     -- Tract 
-	AND m1.tract IN ({$tract})
+	-- AND m1.tract IN (10660, 10425)
+    AND m1.tract IN ({$tract})
 
 	-- Photometric cut
 	-- Note: will do mag cut in post-processing
-	-- AND f1.i_cmodel_mag <= 23.5
+    AND f1.i_cmodel_mag <= 24.
 	AND NOT f1.i_cmodel_flag
 
 	-- Extendedness cut 

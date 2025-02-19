@@ -82,7 +82,7 @@ def main():
         tractname=  'fieldTractInfoS21.csv'
     elif 's23' in release_year:
         release_version =   'dr4'
-        ngroups =   20
+        ngroups =   40
         tractname=  'TractInfoS23.csv'
     
 
