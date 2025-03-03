@@ -11,7 +11,7 @@ __version__ = '0.1'
 
 NAME = "pfstarget"
 PACKAGES = find_packages(where="src")
-META_PATH = os.path.join("py", "pfstarget", "__init__.py")
+META_PATH = os.path.join("src", "pfstarget", "__init__.py")
 CLASSIFIERS = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Science/Research",
