@@ -97,8 +97,8 @@ def _prepare_hsc(hsc, dust_extinction='default'):
              ('I_ERR', 'f4'), 
              ('Z_ERR', 'f4'), 
              ('Y_ERR', 'f4'), 
-             ('I_MEAS_CMODEL_MAG', 'f4'), 
-             ('I_MEAS_PSF_MAG', 'f4')
+             #('I_MEAS_CMODEL_MAG', 'f4'), 
+             ('I_PSF_MAG', 'f4')
              ]
 
     objects = np.zeros(len(hsc), dtype=dtype)
@@ -144,7 +144,7 @@ def _prepare_hsc(hsc, dust_extinction='default'):
 
     # additional columns 
     objects['OBJID'] = hsc['object_id']  # object id 
-    objects['RA'] = hsc['i_ra'] # RA from i-band measurement
-    objects['DEC'] = hsc['i_dec'] # RA from i-band measurement
+    objects['RA'] = hsc['ra'] # RA from i-band measurement
+    objects['DEC'] = hsc['dec'] # RA from i-band measurement
 
     return objects
