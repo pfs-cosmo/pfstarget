@@ -74,7 +74,7 @@ def star_galaxy(i_cmodel, i_psf, cut=-0.15):
     return (i_cmodel - i_psf < cut)
 
 
-def _prepare_hsc(hsc): 
+def _prepare_hsc(hsc, dust_extinction='default'): 
     ''' prepare HSC imaging data for target selection 
 
     args:
@@ -93,6 +93,10 @@ def _prepare_hsc(hsc):
              ('Z_MAG', 'f4'), 
              ('Y_MAG', 'f4'), 
              ('G_ERR', 'f4'), 
+             ('R_ERR', 'f4'), 
+             ('I_ERR', 'f4'), 
+             ('Z_ERR', 'f4'), 
+             ('Y_ERR', 'f4'), 
              ('I_MEAS_CMODEL_MAG', 'f4'), 
              ('I_MEAS_PSF_MAG', 'f4')
              ]
@@ -100,32 +104,43 @@ def _prepare_hsc(hsc):
     objects = np.zeros(len(hsc), dtype=dtype)
 
     # grizy magnitudes corrections for galactic dust extinction 
-    # E(B -V)
-    # https://hsc-release.mtk.nao.ac.jp/schema/#pdr3.pdr3_wide.forced
-    # 3.24::real * "_forced:part1".extinction_bv AS a_g,
-    # 2.276::real * "_forced:part1".extinction_bv AS a_r,
-    # 1.633::real * "_forced:part1".extinction_bv AS a_i,
-    # 1.263::real * "_forced:part1".extinction_bv AS a_z,
-    # 1.075::real * "_forced:part1".extinction_bv AS a_y,
-    g_a = hsc["a_g"]
-    r_a = hsc["a_r"]
-    i_a = hsc["a_i"]
-    z_a = hsc["a_z"]
-    y_a = hsc["a_y"]
+    if dust_extinction == 'default': 
+        # E(B -V)
+        # https://hsc-release.mtk.nao.ac.jp/schema/#pdr3.pdr3_wide.forced
+        # 3.24::real * "_forced:part1".extinction_bv AS a_g,
+        # 2.276::real * "_forced:part1".extinction_bv AS a_r,
+        # 1.633::real * "_forced:part1".extinction_bv AS a_i,
+        # 1.263::real * "_forced:part1".extinction_bv AS a_z,
+        # 1.075::real * "_forced:part1".extinction_bv AS a_y,
+        g_a = hsc["a_g"]
+        r_a = hsc["a_r"]
+        i_a = hsc["a_i"]
+        z_a = hsc["a_z"]
+        y_a = hsc["a_y"]
+    else: 
+        # IMPLEMENT RONGPU'S DUST EXTINCTION CORRECTION HERE 
+        raise NotImplementedError
 
     # correct magnitudes for dust extinction
-    objects['G_MAG'] = hsc["forced_g_cmodel_mag"] - g_a
-    objects['R_MAG'] = hsc["forced_r_cmodel_mag"] - r_a
-    objects['I_MAG'] = hsc["forced_i_cmodel_mag"] - i_a
-    objects['Z_MAG'] = hsc["forced_z_cmodel_mag"] - z_a
-    objects['Y_MAG'] = hsc["forced_y_cmodel_mag"] - y_a
+    objects['G_MAG'] = hsc["g_cmodel_mag"] - g_a
+    objects['R_MAG'] = hsc["r_cmodel_mag"] - r_a
+    objects['I_MAG'] = hsc["i_cmodel_mag"] - i_a
+    objects['Z_MAG'] = hsc["z_cmodel_mag"] - z_a
+    objects['Y_MAG'] = hsc["y_cmodel_mag"] - y_a
            
     # g-band CMODEL magnitude used for quality cuts 
-    objects['G_ERR'] = hsc["forced_g_cmodel_magerr"]
+    objects['G_ERR'] = hsc["g_cmodel_mag_err"]
+    objects['R_ERR'] = hsc["r_cmodel_mag_err"]
+    objects['I_ERR'] = hsc["i_cmodel_mag_err"]
+    objects['Z_ERR'] = hsc["z_cmodel_mag_err"]
+    objects['Y_ERR'] = hsc["y_cmodel_mag_err"]
 
     # i-band measured CMODEL and PSF magnitudes for star-galaxy separation 
-    objects['I_MEAS_CMODEL_MAG'] = hsc["meas_i_cmodel_mag"]
-    objects['I_MEAS_PSF_MAG'] = hsc["meas_i_psfflux_mag"]
+    objects['I_PSF_MAG'] = hsc["i_psf_mag"]
+    # commented out the lines below because the updated HSC tract data no
+    # longer includes measured cmodel or PSF magnitudes (see issue #4). 
+    #objects['I_MEAS_CMODEL_MAG'] = hsc["meas_i_cmodel_mag"]
+    #objects['I_MEAS_PSF_MAG'] = hsc["meas_i_psfflux_mag"]
 
     # additional columns 
     objects['OBJID'] = hsc['object_id']  # object id 
