@@ -66,18 +66,18 @@ SELECT
 	
         -- Measured photometry for star-galaxy separation 
         -- cmodel magnitudes 
-        m1.g_cmodel_mag as g_meas_cmodel_mag
-        m1.r_cmodel_mag as r_meas_cmodel_mag
-        m1.i_cmodel_mag as i_meas_cmodel_mag
-        m1.z_cmodel_mag as z_meas_cmodel_mag
-        m1.y_cmodel_mag as y_meas_cmodel_mag
+        m1.g_cmodel_mag as g_meas_cmodel_mag,
+        m1.r_cmodel_mag as r_meas_cmodel_mag,
+        m1.i_cmodel_mag as i_meas_cmodel_mag,
+        m1.z_cmodel_mag as z_meas_cmodel_mag,
+        m1.y_cmodel_mag as y_meas_cmodel_mag,
         
         -- psf magnitudes 
-        m2.g_psfflux_mag as g_meas_pfs_mag
-        m2.r_psfflux_mag as r_meas_pfs_mag
-        m2.i_psfflux_mag as i_meas_pfs_mag
-        m2.z_psfflux_mag as z_meas_pfs_mag
-        m2.y_psfflux_mag as y_meas_pfs_mag
+        m2.g_psfflux_mag as g_meas_pfs_mag,
+        m2.r_psfflux_mag as r_meas_pfs_mag,
+        m2.i_psfflux_mag as i_meas_pfs_mag,
+        m2.z_psfflux_mag as z_meas_pfs_mag,
+        m2.y_psfflux_mag as y_meas_pfs_mag,
 
 	-- PSF-corrected aperture photometry
 
