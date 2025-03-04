@@ -136,11 +136,8 @@ def _prepare_hsc(hsc, dust_extinction='default'):
     objects['Y_ERR'] = hsc["y_cmodel_mag_err"]
 
     # i-band measured CMODEL and PSF magnitudes for star-galaxy separation 
-    objects['I_PSF_MAG'] = hsc["i_psf_mag"]
-    # commented out the lines below because the updated HSC tract data no
-    # longer includes measured cmodel or PSF magnitudes (see issue #4). 
-    #objects['I_MEAS_CMODEL_MAG'] = hsc["meas_i_cmodel_mag"]
-    #objects['I_MEAS_PSF_MAG'] = hsc["meas_i_psfflux_mag"]
+    objects['I_MEAS_CMODEL_MAG'] = hsc["i_meas_cmodel_mag"]
+    objects['I_MEAS_PSF_MAG'] = hsc["i_meas_psf_mag"]
 
     # additional columns 
     objects['OBJID'] = hsc['object_id']  # object id 
