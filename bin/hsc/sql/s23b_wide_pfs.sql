@@ -87,6 +87,14 @@ SELECT
         m2.i_deblend_blendedness as i_blendedness,
         m2.z_deblend_blendedness as z_blendedness,
         m2.y_deblend_blendedness as y_blendedness,
+        
+        -- some footprints  along very bright objects, ghosts, streaks, and
+        -- other similar artifacts are not blended (see Issue #7) 
+        m1.g_deblend_skipped,
+        m1.r_deblend_skipped,
+        m1.i_deblend_skipped,
+        m1.z_deblend_skipped,
+        m1.y_deblend_skipped,
 
         -- This is the "de-noised" version of the blendedness (see Bosch et al. 2018)
         m2.g_blendedness_abs,
@@ -183,7 +191,7 @@ SELECT
     msk.z_mask_brightstar_ghost12,
     msk.z_mask_brightstar_ghost15,
 
-	msk.y_mask_brightstar_halo,
+    msk.y_mask_brightstar_halo,
     msk.y_mask_brightstar_dip,
     msk.y_mask_brightstar_ghost,
     msk.y_mask_brightstar_blooming,
