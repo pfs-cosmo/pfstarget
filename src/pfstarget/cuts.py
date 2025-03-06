@@ -6,6 +6,7 @@ module for target selection
 '''
 import numpy as np 
 
+from . import extinction as E
 
 
 def isCosmology(objects, star_galaxy_cut=-0.15, magnitude_cut=22.5,
@@ -97,7 +98,8 @@ def masking(objects):
     _mask &= objects['I_MASK_BLOOMING'].astype(bool) 
     return _mask 
 
-def _prepare_hsc(hsc, dust_extinction='default'): 
+
+def _prepare_hsc(hsc, dust_extinction='sfd98'): 
     ''' prepare HSC imaging data for target selection 
 
     args:
@@ -130,30 +132,13 @@ def _prepare_hsc(hsc, dust_extinction='default'):
     objects = np.zeros(len(hsc), dtype=dtype)
 
     # grizy magnitudes corrections for galactic dust extinction 
-    if dust_extinction == 'default': 
-        # E(B -V)
-        # https://hsc-release.mtk.nao.ac.jp/schema/#pdr3.pdr3_wide.forced
-        # 3.24::real * "_forced:part1".extinction_bv AS a_g,
-        # 2.276::real * "_forced:part1".extinction_bv AS a_r,
-        # 1.633::real * "_forced:part1".extinction_bv AS a_i,
-        # 1.263::real * "_forced:part1".extinction_bv AS a_z,
-        # 1.075::real * "_forced:part1".extinction_bv AS a_y,
-        g_a = hsc["a_g"]
-        r_a = hsc["a_r"]
-        i_a = hsc["a_i"]
-        z_a = hsc["a_z"]
-        y_a = hsc["a_y"]
-    else: 
-        # IMPLEMENT RONGPU'S DUST EXTINCTION CORRECTION HERE 
-        raise NotImplementedError
+    _g, _r, _i, _z, _y = E._extinction_correct(hsc, method='sfd'): 
+    objects['G_MAG'] = _g
+    objects['R_MAG'] = _r
+    objects['I_MAG'] = _i
+    objects['Z_MAG'] = _z
+    objects['Y_MAG'] = _y
 
-    # correct magnitudes for dust extinction
-    objects['G_MAG'] = hsc["g_cmodel_mag"] - g_a
-    objects['R_MAG'] = hsc["r_cmodel_mag"] - r_a
-    objects['I_MAG'] = hsc["i_cmodel_mag"] - i_a
-    objects['Z_MAG'] = hsc["z_cmodel_mag"] - z_a
-    objects['Y_MAG'] = hsc["y_cmodel_mag"] - y_a
-           
     # g-band CMODEL magnitude used for quality cuts 
     objects['G_ERR'] = hsc["g_cmodel_mag_err"]
     objects['R_ERR'] = hsc["r_cmodel_mag_err"]
