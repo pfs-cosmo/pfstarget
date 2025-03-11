@@ -4,8 +4,12 @@ module for correcting for galactic extinction
 
 
 '''
+import os
+import numpy as np 
+from astropy.table import Table, join
 
-def _extinction_correct(hsc, method='sfd98'): 
+
+def _extinction_correct(hsc, method='sfd98', release='s23b'): 
     ''' apply correction for galactic extinction using different methods (SFD98,
     Zhou DESI) and zero-point photometry correction  
 
@@ -35,7 +39,8 @@ def _extinction_correct(hsc, method='sfd98'):
         
         # get photometry zero-point offsets from wide.stellar_sequence_offset
         # (see Issue #8 for details)  
-        grizy_offset = _get_zeropoint_correct(hsc['tract'], hsc['patch']) 
+        grizy_offset = _get_zeropoint_correct(hsc['tract'], hsc['patch'],
+                                              release=relase) 
 
         # correct magnitudes for dust extinction
         g_mag = hsc["g_cmodel_mag"] - g_a - grizy_offset[0]
@@ -51,12 +56,25 @@ def _extinction_correct(hsc, method='sfd98'):
     return g_mag, r_mag, i_mag, z_mag, y_mag 
 
 
-def _get_zeropoint_correct(tract, patch): 
+def _get_zeropoint_correct(tract, patch, release='s23b'): 
     ''' return g/r/i/z/y-band photometric zeropoint correction based on tract
     and patch. 
     '''
-    # implement look up table for pdr3_wide.stellar_sequence_offsets based on
-    # tract and patch
+    if release != 's23b': 
+        raise ValueError("zero-point correction only for S23B")
+     
+    # read pdr3_wide.stellar_sequence_offsets
+    foffset = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                'dat', 's23b_stellar_offsets.csv.gz')
+    offsets = Table.read(foffset, format='csv') 
+        
+    # match offsets to the input tracts and patches
+    _tp = Table([tract, patch], names=['tract', 'patch'])
+    mtable = join(_tp, offsets, join_type='left')
 
-    return offset 
-
+    output = np.array([np.array(mtable['g_mag_offset']), 
+                       np.array(mtable['r_mag_offset']), 
+                       np.array(mtable['i_mag_offset']), 
+                       np.array(mtable['z_mag_offset']), 
+                       np.array(mtable['y_mag_offset'])]) 
+    return output 
