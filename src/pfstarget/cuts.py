@@ -99,11 +99,19 @@ def masking(objects):
     return _mask 
 
 
-def _prepare_hsc(hsc, dust_extinction='sfd98'): 
+def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b'): 
     ''' prepare HSC imaging data for target selection 
 
     args:
         hsc : object 
+            astropy.Table or some structured array with hsc data 
+
+        dust_extinction : str
+            string specifying the galactic dust extinction model 
+            (default: 'sfd98) 
+
+        release : str
+            string specifying the HSC data release (Default: s23b) 
     
     return: 
         objects: structured numpy array of HSC objects with relevant columns
@@ -132,7 +140,7 @@ def _prepare_hsc(hsc, dust_extinction='sfd98'):
     objects = np.zeros(len(hsc), dtype=dtype)
 
     # grizy magnitudes corrections for galactic dust extinction 
-    _g, _r, _i, _z, _y = E._extinction_correct(hsc, method='sfd'): 
+    _g, _r, _i, _z, _y = E._extinction_correct(hsc, method=dust_extinction, release=release)
     objects['G_MAG'] = _g
     objects['R_MAG'] = _r
     objects['I_MAG'] = _i

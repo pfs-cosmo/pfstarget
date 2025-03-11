@@ -40,7 +40,7 @@ def _extinction_correct(hsc, method='sfd98', release='s23b'):
         # get photometry zero-point offsets from wide.stellar_sequence_offset
         # (see Issue #8 for details)  
         grizy_offset = _get_zeropoint_correct(hsc['tract'], hsc['patch'],
-                                              release=relase) 
+                                              release=release) 
 
         # correct magnitudes for dust extinction
         g_mag = hsc["g_cmodel_mag"] - g_a - grizy_offset[0]
