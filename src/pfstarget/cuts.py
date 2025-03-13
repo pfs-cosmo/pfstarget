@@ -64,6 +64,12 @@ def quality_cuts(objects):
             np.isfinite(objects['I_MAG']) & 
             np.isfinite(objects['Z_MAG']))
 
+    # psf_flux_flag: psf_flux is required by the observatory
+    cuts &= ((~objects['g_psf_flag']) & 
+             (~objects['r_psf_flag']) & 
+             (~objects['i_psf_flag']) &
+             (~objects['z_psf_flag']))
+
     # g-band magnitude error cut
     cuts &= (objects['G_ERR'] < objects['G_MAG'] * 0.05 - 1.1) 
 
