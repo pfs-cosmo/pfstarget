@@ -1,6 +1,5 @@
--- To select objects in the COSMOS field from the HSC S23B wide layer
+-- To select objects from the HSC S23B wide layer
 SELECT
-
 	-- Basic information
 	f1.object_id, f1.ra, f1.dec, f1.tract, f1.patch,
 	
@@ -71,6 +70,7 @@ SELECT
         m1.i_cmodel_mag as i_meas_cmodel_mag,
         m1.z_cmodel_mag as z_meas_cmodel_mag,
         m1.y_cmodel_mag as y_meas_cmodel_mag,
+        m1.i_cmodel_flag as i_meas_cmodel_flag,
         
         -- psf magnitudes 
         m2.g_psfflux_mag as g_meas_psf_mag,
@@ -78,6 +78,7 @@ SELECT
         m2.i_psfflux_mag as i_meas_psf_mag,
         m2.z_psfflux_mag as z_meas_psf_mag,
         m2.y_psfflux_mag as y_meas_psf_mag,
+        m2.i_psfflux_flag as i_meas_psf_flag,
 
 	-- PSF-corrected aperture photometry
 
@@ -90,11 +91,7 @@ SELECT
         
         -- some footprints  along very bright objects, ghosts, streaks, and
         -- other similar artifacts are not blended (see Issue #7) 
-        m1.g_deblend_skipped,
-        m1.r_deblend_skipped,
-        m1.i_deblend_skipped,
-        m1.z_deblend_skipped,
-        m1.y_deblend_skipped,
+        m1.deblend_skipped,
 
         -- This is the "de-noised" version of the blendedness (see Bosch et al. 2018)
         m2.g_blendedness_abs,
@@ -116,6 +113,21 @@ SELECT
         m2.i_blendedness_flag,
         m2.z_blendedness_flag,
         m2.y_blendedness_flag,
+
+
+        -- aperture photometry used for low surface brightness object cut
+        -- (Issue #10) 
+        m3.g_apertureflux_10_mag,
+        m3.r_apertureflux_10_mag,
+        m3.i_apertureflux_10_mag,
+        m3.z_apertureflux_10_mag,
+        m3.y_apertureflux_10_mag,
+        
+        m3.g_apertureflux_10_flag,
+        m3.r_apertureflux_10_flag,
+        m3.i_apertureflux_10_flag,
+        m3.z_apertureflux_10_flag,
+        m3.y_apertureflux_10_flag,
 	
 	-- Flags for later selection
 	-- 1. The general failure flag
@@ -161,51 +173,51 @@ SELECT
 	f1.z_pixelflags_bright_object,
 	f1.y_pixelflags_bright_object,
 
-    -- 5. Detailed bright star masks 
-    -- It is also possible to gather more detailed information about the bright star masks here.
-    msk.g_mask_brightstar_halo, 
-    msk.g_mask_brightstar_dip, 
-    msk.g_mask_brightstar_ghost,
-    msk.g_mask_brightstar_blooming,
-    msk.g_mask_brightstar_ghost12,
-    msk.g_mask_brightstar_ghost15,
+        -- 5. Detailed bright star masks 
+        -- It is also possible to gather more detailed information about the bright star masks here.
+        msk.g_mask_brightstar_halo, 
+        msk.g_mask_brightstar_dip, 
+        msk.g_mask_brightstar_ghost,
+        msk.g_mask_brightstar_blooming,
+        msk.g_mask_brightstar_ghost12,
+        msk.g_mask_brightstar_ghost15,
 
-    msk.r_mask_brightstar_halo,
-    msk.r_mask_brightstar_dip,
-    msk.r_mask_brightstar_ghost,
-    msk.r_mask_brightstar_blooming,
-    msk.r_mask_brightstar_ghost12,
-    msk.r_mask_brightstar_ghost15,
+        msk.r_mask_brightstar_halo,
+        msk.r_mask_brightstar_dip,
+        msk.r_mask_brightstar_ghost,
+        msk.r_mask_brightstar_blooming,
+        msk.r_mask_brightstar_ghost12,
+        msk.r_mask_brightstar_ghost15,
 
-    msk.i_mask_brightstar_halo,
-    msk.i_mask_brightstar_dip,
-    msk.i_mask_brightstar_ghost,
-    msk.i_mask_brightstar_blooming,
-    msk.i_mask_brightstar_ghost12,
-    msk.i_mask_brightstar_ghost15,
+        msk.i_mask_brightstar_halo,
+        msk.i_mask_brightstar_dip,
+        msk.i_mask_brightstar_ghost,
+        msk.i_mask_brightstar_blooming,
+        msk.i_mask_brightstar_ghost12,
+        msk.i_mask_brightstar_ghost15,
 
-    msk.z_mask_brightstar_halo,
-    msk.z_mask_brightstar_dip,
-    msk.z_mask_brightstar_ghost,
-    msk.z_mask_brightstar_blooming,
-    msk.z_mask_brightstar_ghost12,
-    msk.z_mask_brightstar_ghost15,
+        msk.z_mask_brightstar_halo,
+        msk.z_mask_brightstar_dip,
+        msk.z_mask_brightstar_ghost,
+        msk.z_mask_brightstar_blooming,
+        msk.z_mask_brightstar_ghost12,
+        msk.z_mask_brightstar_ghost15,
 
-    msk.y_mask_brightstar_halo,
-    msk.y_mask_brightstar_dip,
-    msk.y_mask_brightstar_ghost,
-    msk.y_mask_brightstar_blooming,
-    msk.y_mask_brightstar_ghost12,
-    msk.y_mask_brightstar_ghost15,
+        msk.y_mask_brightstar_halo,
+        msk.y_mask_brightstar_dip,
+        msk.y_mask_brightstar_ghost,
+        msk.y_mask_brightstar_blooming,
+        msk.y_mask_brightstar_ghost12,
+        msk.y_mask_brightstar_ghost15,
 
 	-- 6. y-band flags
 	f2.y_sdsscentroid_flag,
 	f1.y_pixelflags_edge,
-    f1.y_pixelflags_saturatedcenter,
+        f1.y_pixelflags_saturatedcenter,
 	f1.y_pixelflags_interpolatedcenter,
 	f1.y_pixelflags_crcenter
 	
-    -- I don't think the S23B photo-z is ready yet, so I will skip this part for now.
+        -- I don't think the S23B photo-z is ready yet, so I will skip this part for now.
 	-- Mizuki photo-z information 
 	-- p1.photoz_mean as pz_mean_mizuki, 
 	-- p1.photoz_best as pz_best_mizuki, 
@@ -253,61 +265,59 @@ FROM
 	LEFT JOIN s23b_wide.forced6 as f6 USING (object_id)
 	LEFT JOIN s23b_wide.meas as m1 USING (object_id)
 	LEFT JOIN s23b_wide.meas2 as m2 USING (object_id)
-    LEFT JOIN s23b_wide.masks as msk USING (object_id)
+	LEFT JOIN s23b_wide.meas3 as m3 USING (object_id)
+        LEFT JOIN s23b_wide.masks as msk USING (object_id)
 
 WHERE
     f1.isprimary
-	-- Region
-	-- This is for the COSMOS field
-	-- AND boxSearch(coord, 149.22484, 150.81303, 1.541319, 2.87744)
-
+    
     -- Tract 
     AND m1.tract IN ({$tract})
 
-	-- Photometric cut
-	-- Note: will do mag cut in post-processing
+    -- Photometric cut
+    -- Note: will do mag cut in post-processing
     AND f1.i_cmodel_mag <= 24.
-	AND NOT f1.i_cmodel_flag
+    AND NOT f1.i_cmodel_flag
 
-	-- Extendedness cut 
-	-- Note: this is done in target seleciton post-processing
+    -- Extendedness cut 
+    -- Note: this is done in target seleciton post-processing
     -- Note: need to think about this cut. Is it true that all potential PSF targets are extended objects?
-	-- AND f1.r_extendedness_value > 0
-	-- AND f1.i_extendedness_value > 0
+    -- AND f1.r_extendedness_value > 0
+    -- AND f1.i_extendedness_value > 0
 
-	-- Full-depth full-color cut
-	AND f1.g_inputcount_value >= 4
-	AND f1.r_inputcount_value >= 4
-	AND f1.i_inputcount_value >= 5
-	AND f1.z_inputcount_value >= 5
+    -- Full-depth full-color cut
+    AND f1.g_inputcount_value >= 4
+    AND f1.r_inputcount_value >= 4
+    AND f1.i_inputcount_value >= 5
+    AND f1.z_inputcount_value >= 5
 
 
-	-- Not failed at finding the center
-	AND NOT f2.g_sdsscentroid_flag
-	AND NOT f2.r_sdsscentroid_flag
-	AND NOT f2.i_sdsscentroid_flag
-	AND NOT f2.z_sdsscentroid_flag
+    -- Not failed at finding the center
+    AND NOT f2.g_sdsscentroid_flag
+    AND NOT f2.r_sdsscentroid_flag
+    AND NOT f2.i_sdsscentroid_flag
+    AND NOT f2.z_sdsscentroid_flag
 
-	-- The object's center is not outside the image
-	AND NOT f1.g_pixelflags_edge    
-	AND NOT f1.r_pixelflags_edge
-	AND NOT f1.i_pixelflags_edge
-	AND NOT f1.z_pixelflags_edge
+    -- The object's center is not outside the image
+    AND NOT f1.g_pixelflags_edge    
+    AND NOT f1.r_pixelflags_edge
+    AND NOT f1.i_pixelflags_edge
+    AND NOT f1.z_pixelflags_edge
 
-	-- Not saturated at the center  
-	AND NOT f1.g_pixelflags_saturatedcenter
+    -- Not saturated at the center  
+    AND NOT f1.g_pixelflags_saturatedcenter
     AND NOT f1.r_pixelflags_saturatedcenter
     AND NOT f1.i_pixelflags_saturatedcenter
     AND NOT f1.z_pixelflags_saturatedcenter
 
-	-- The center is not interpolated
-	AND NOT f1.g_pixelflags_interpolatedcenter
-	AND NOT f1.r_pixelflags_interpolatedcenter
-	AND NOT f1.i_pixelflags_interpolatedcenter
-	AND NOT f1.z_pixelflags_interpolatedcenter
+    -- The center is not interpolated
+    AND NOT f1.g_pixelflags_interpolatedcenter
+    AND NOT f1.r_pixelflags_interpolatedcenter
+    AND NOT f1.i_pixelflags_interpolatedcenter
+    AND NOT f1.z_pixelflags_interpolatedcenter
 
-	-- The center is not affected by a cosmic ray
-	AND NOT f1.g_pixelflags_crcenter
+    -- The center is not affected by a cosmic ray
+    AND NOT f1.g_pixelflags_crcenter
     AND NOT f1.r_pixelflags_crcenter
     AND NOT f1.i_pixelflags_crcenter
     AND NOT f1.z_pixelflags_crcenter
