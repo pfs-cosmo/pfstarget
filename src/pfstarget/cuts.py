@@ -67,6 +67,9 @@ def quality_cuts(objects):
     # g-band magnitude error cut
     cuts &= (objects['G_ERR'] < objects['G_MAG'] * 0.05 - 1.1) 
 
+    # not skipped by deblender (this is a very very small fraction of objects)
+    cuts &= (~objects['deblend_skipped'])
+
     # low surface brightness object cut (ref. Li Xiangchong et al. 2022, Table
     # 2; also Issue #10) 
     cuts &= ((objects['i_apertureflux_10_mag'] <= 25.5) & 
