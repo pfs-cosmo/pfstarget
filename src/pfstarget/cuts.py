@@ -45,10 +45,10 @@ def color_cut(objects, magnitude_cut=22.5, g_r_cut=0.15, color_slope=2.0, color_
     2.4
     '''
     # faint magnitude cut 
-    cuts = objects['G_MAG'] > magnitude_cut  
+    cuts = objects['I_MAG'] > magnitude_cut  # I_MAG <= 24 is hardcoded in the SQL 
     
     # color cut 
-    cuts &= (((objects['G_MAG'] - objects['R_MAG']) < 0.15) | # g-r cut (for 1.6 < z < 2.4 ELGs) 
+    cuts &= (((objects['G_MAG'] - objects['R_MAG']) < g_r_cut) | # g-r cut (for 1.6 < z < 2.4 ELGs) 
              ((objects['I_MAG'] - objects['Z_MAG']) 
               > color_slope * (objects['G_MAG'] - objects['R_MAG'])- color_yint))
     return cuts 
@@ -66,6 +66,11 @@ def quality_cuts(objects):
 
     # g-band magnitude error cut
     cuts &= (objects['G_ERR'] < objects['G_MAG'] * 0.05 - 1.1) 
+
+    # low surface brightness object cut (ref. Li Xiangchong et al. 2022, Table
+    # 2; also Issue #10) 
+    cuts &= ((objects['i_apertureflux_10_mag'] <= 25.5) & 
+             (~objects['i_apertureflux_10_flag']))
 
     # cut on extreme colors (these values are preliminary --- revisit this in detail)
     cuts &= ((objects['G_MAG'] - objects['R_MAG'] > -1) & 
