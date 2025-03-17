@@ -180,7 +180,7 @@ def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=True):
     # i-band measured CMODEL and PSF magnitudes for star-galaxy separation 
     objects['I_MEAS_CMODEL_MAG'] = hsc["i_meas_cmodel_mag"]
     # TEMPORARILY INCLUDING TYPO FIX THIS BACK TO PSF LATER
-    objects['I_MEAS_PSF_MAG'] = hsc["i_meas_pfs_mag"] 
+    objects['I_MEAS_PSF_MAG'] = hsc["i_meas_psf_mag"] 
 
     # i-band mask for bright stars
     objects['I_MASK_HALO']      = hsc["i_mask_brightstar_halo"].astype(int)
