@@ -45,10 +45,10 @@ def color_cut(objects, magnitude_cut=22.5, g_r_cut=0.15, color_slope=2.0, color_
     2.4
     '''
     # faint magnitude cut 
-    cuts = objects['G_MAG'] > magnitude_cut  
+    cuts = objects['I_MAG'] > magnitude_cut  # I_MAG <= 24 is hardcoded in the SQL 
     
     # color cut 
-    cuts &= (((objects['G_MAG'] - objects['R_MAG']) < 0.15) | # g-r cut (for 1.6 < z < 2.4 ELGs) 
+    cuts &= (((objects['G_MAG'] - objects['R_MAG']) < g_r_cut) | # g-r cut (for 1.6 < z < 2.4 ELGs) 
              ((objects['I_MAG'] - objects['Z_MAG']) 
               > color_slope * (objects['G_MAG'] - objects['R_MAG'])- color_yint))
     return cuts 
@@ -64,8 +64,22 @@ def quality_cuts(objects):
             np.isfinite(objects['I_MAG']) & 
             np.isfinite(objects['Z_MAG']))
 
+    # psf_flux_flag: psf_flux is required by the observatory
+    cuts &= ((~objects['G_PSF_FLAG']) & 
+             (~objects['R_PSF_FLAG']) & 
+             (~objects['I_PSF_FLAG']) &
+             (~objects['Z_PSF_FLAG']))
+
     # g-band magnitude error cut
     cuts &= (objects['G_ERR'] < objects['G_MAG'] * 0.05 - 1.1) 
+
+    # not skipped by deblender (this is a very very small fraction of objects)
+    cuts &= (~objects['DEBLEND_SKIPPED'])
+
+    # low surface brightness object cut (ref. Li Xiangchong et al. 2022, Table
+    # 2; also Issue #10) 
+    cuts &= ((objects['I_APFLUX10_MAG'] <= 25.5) & 
+             (~objects['I_APFLUX10_FLAG']))
 
     # cut on extreme colors (these values are preliminary --- revisit this in detail)
     cuts &= ((objects['G_MAG'] - objects['R_MAG'] > -1) & 
@@ -99,11 +113,19 @@ def masking(objects):
     return _mask 
 
 
-def _prepare_hsc(hsc, dust_extinction='sfd98'): 
+def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=True): 
     ''' prepare HSC imaging data for target selection 
 
     args:
         hsc : object 
+            astropy.Table or some structured array with hsc data 
+
+        dust_extinction : str
+            string specifying the galactic dust extinction model 
+            (default: 'sfd98) 
+
+        release : str
+            string specifying the HSC data release (Default: s23b) 
     
     return: 
         objects: structured numpy array of HSC objects with relevant columns
@@ -126,13 +148,22 @@ def _prepare_hsc(hsc, dust_extinction='sfd98'):
              ('I_MEAS_PSF_MAG', 'f4'), 
              ('I_MASK_HALO', 'i'), 
              ('I_MASK_GHOST', 'i'), 
-             ('I_MASK_BLOOMING', 'i')
+             ('I_MASK_BLOOMING', 'i'),
+             ('G_PSF_FLAG', bool), 
+             ('R_PSF_FLAG', bool),
+             ('I_PSF_FLAG', bool), 
+             ('Z_PSF_FLAG', bool), 
+             ('DEBLEND_SKIPPED', bool), 
+             ('I_APFLUX10_MAG', 'f4'),  
+             ('I_APFLUX10_FLAG', bool)
              ]
 
     objects = np.zeros(len(hsc), dtype=dtype)
 
     # grizy magnitudes corrections for galactic dust extinction 
-    _g, _r, _i, _z, _y = E._extinction_correct(hsc, method='sfd'): 
+    _g, _r, _i, _z, _y = E._extinction_correct(hsc, method=dust_extinction, 
+                                               release=release,
+                                               zeropoint=zeropoint)
     objects['G_MAG'] = _g
     objects['R_MAG'] = _r
     objects['I_MAG'] = _i
@@ -149,16 +180,29 @@ def _prepare_hsc(hsc, dust_extinction='sfd98'):
     # i-band measured CMODEL and PSF magnitudes for star-galaxy separation 
     objects['I_MEAS_CMODEL_MAG'] = hsc["i_meas_cmodel_mag"]
     # TEMPORARILY INCLUDING TYPO FIX THIS BACK TO PSF LATER
-    objects['I_MEAS_PSF_MAG'] = hsc["i_meas_pfs_mag"] 
+    objects['I_MEAS_PSF_MAG'] = hsc["i_meas_psf_mag"] 
 
     # i-band mask for bright stars
     objects['I_MASK_HALO']      = hsc["i_mask_brightstar_halo"].astype(int)
     objects['I_MASK_GHOST']     = hsc["i_mask_brightstar_ghost"].astype(int)
     objects['I_MASK_BLOOMING']  = hsc["i_mask_brightstar_blooming"].astype(int)
+    
+    # PSF flag used for quality cut 
+    objects['G_PSF_FLAG'] = hsc['g_psf_flag']
+    objects['R_PSF_FLAG'] = hsc['r_psf_flag']
+    objects['I_PSF_FLAG'] = hsc['i_psf_flag']
+    objects['Z_PSF_FLAG'] = hsc['z_psf_flag']
+    
+    # skipped by deblender 
+    objects['DEBLEND_SKIPPED'] = hsc['deblend_skipped']
+
+    # aperture flux 
+    objects['I_APFLUX10_MAG']    = hsc['i_apertureflux_10_mag']
+    objects['I_APFLUX10_FLAG']   = hsc['i_apertureflux_10_flag']
 
     # additional columns 
     objects['OBJID'] = hsc['object_id']  # object id 
     objects['RA'] = hsc['ra'] # RA from i-band measurement
     objects['DEC'] = hsc['dec'] # RA from i-band measurement
-
+             
     return objects
