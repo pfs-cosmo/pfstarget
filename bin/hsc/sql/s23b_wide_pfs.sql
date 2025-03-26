@@ -79,7 +79,7 @@ SELECT
         m2.z_psfflux_mag as z_meas_psf_mag,
         m2.y_psfflux_mag as y_meas_psf_mag,
 
-	-- PSF-corrected aperture photometry
+	    -- PSF-corrected aperture photometry
 
         -- Blendedness and deblender-related diagnoses.
         m2.g_deblend_blendedness as g_blendedness,
@@ -205,21 +205,20 @@ SELECT
 	f1.y_pixelflags_interpolatedcenter,
 	f1.y_pixelflags_crcenter
 	
-    -- I don't think the S23B photo-z is ready yet, so I will skip this part for now.
 	-- Mizuki photo-z information 
-	-- p1.photoz_mean as pz_mean_mizuki, 
-	-- p1.photoz_best as pz_best_mizuki, 
-	-- p1.photoz_conf_mean as pz_conf_mean_mizuki, 
-	-- p1.photoz_conf_best as pz_conf_best_mizuki, 
-	-- p1.photoz_risk_mean as pz_risk_mean_mizuki, 
-	-- p1.photoz_risk_best as pz_risk_best_mizuki,
-	-- p1.photoz_std_mean as pz_std_mean_mizuki, 
-	-- p1.photoz_std_best as pz_std_best_mizuki,
-	-- p1.photoz_err68_min as pz_err68_min_mizuki, 
-	-- p1.photoz_err68_max as pz_err68_max_mizuki, 
-	-- p1.stellar_mass as mstar_mizuki,
-	-- p1.stellar_mass_err68_min as mstar_min_mizuki,
-	-- p1.stellar_mass_err68_max as mstar_max_mizuki,
+	p1.photoz_mean as pz_mean_mizuki, 
+	p1.photoz_best as pz_best_mizuki, 
+	p1.photoz_conf_mean as pz_conf_mean_mizuki, 
+	p1.photoz_conf_best as pz_conf_best_mizuki, 
+	p1.photoz_risk_mean as pz_risk_mean_mizuki, 
+	p1.photoz_risk_best as pz_risk_best_mizuki,
+	p1.photoz_std_mean as pz_std_mean_mizuki, 
+	p1.photoz_std_best as pz_std_best_mizuki,
+	p1.photoz_err68_min as pz_err68_min_mizuki, 
+	p1.photoz_err68_max as pz_err68_max_mizuki, 
+	p1.stellar_mass as mstar_mizuki,
+	p1.stellar_mass_err68_min as mstar_min_mizuki,
+	p1.stellar_mass_err68_max as mstar_max_mizuki,
 	
 	-- DNNZ photo-z information 
 	-- p2.photoz_mean as pz_mean_dnnz, 
@@ -266,8 +265,11 @@ WHERE
 
 	-- Photometric cut
 	-- Note: will do mag cut in post-processing
-    AND f1.i_cmodel_mag <= 24.
+    AND f1.i_cmodel_mag <= 24.8
 	AND NOT f1.i_cmodel_flag
+	AND NOT f1.g_cmodel_flag
+	AND NOT f1.r_cmodel_flag
+	AND NOT f1.z_cmodel_flag
 
 	-- Extendedness cut 
 	-- Note: this is done in target seleciton post-processing
