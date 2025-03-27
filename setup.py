@@ -21,7 +21,8 @@ CLASSIFIERS = [
 ]
 INSTALL_REQUIRES = [
         "numpy>1.18",
-        "astropy" 
+        "astropy", 
+        "healpy"
 ]
 # END PROJECT SPECIFIC
 
