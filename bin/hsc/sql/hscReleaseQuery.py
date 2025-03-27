@@ -38,54 +38,36 @@ def main():
                         help='specify output format')
     parser.add_argument('--nomail', '-M', action='store_true',
                         help='suppress email notice')
-    parser.add_argument('--release_year', '-r',
-                        choices='s15 s16 s17 s18 s19 s20 s21 s23'.split(),
-                        required=True,
-                        help='the release year')
     parser.add_argument('--password-env', default='HSC_SSP_CAS_PASSWORD',
                         help='environment variable for STARS')
-    parser.add_argument('--preview', '-p', action='store_true',
-                        help='quick mode (short timeout)')
-    parser.add_argument('--skip-syntax-check', '-S', action='store_true',
-                        help='skip syntax check')
     parser.add_argument('--api-url',
                         default='https://hscdata.mtk.nao.ac.jp/datasearch/api/catalog_jobs/',
                         help='for developers')
+    parser.add_argument('--skip-syntax-check', '-S', action='store_true',
+                        help='skip syntax check')
     parser.add_argument('sql-file', type=argparse.FileType('r'),
                         help='SQL file')
 
     global args,release_version,prefix,prefix2,ngroups
     args = parser.parse_args()
-    release_year   =   args.release_year
+    release_year   =   's23' 
     prefix  =   'database/%s%s/sql' %(release_year,diffver)
     prefix2 =   'database/%s%s/tracts' %(release_year,diffver)
     if not os.path.exists(prefix):
         os.system('mkdir -p %s' %prefix)
     if not os.path.exists(prefix2):
         os.system('mkdir -p %s' %prefix2)
-
-    if 's17' in release_year:
-        release_version =   'dr2'
-        ngroups =   5
-        tractname='fieldTractInfoS16.csv'
-    elif 's18' in release_year:
-        release_version =   'dr2'
-        ngroups =   10
-        tractname='fieldTractInfoS18.csv'
-    elif 's19' in release_year:
-        release_version =   'dr3'
-        ngroups =   20
-        tractname=  'fieldTractInfoS19.csv'
-    elif 's21' in release_year:
-        release_version =   'dr4-citus'
-        ngroups =   20
-        tractname=  'fieldTractInfoS21.csv'
-    elif 's23' in release_year:
-        release_version =   'dr4'
-        ngroups =   40
-        tractname=  'TractInfoS23.csv'
     
-
+    # tracts for DR4 S23B
+    release_version =   'dr4'
+    ngroups =   40
+    tractname=  'TractInfoS23.csv'
+    
+    # randoms or objects 
+    is_randoms = False
+    if 'randoms' in args.__dict__['sql-file'].name:
+        is_randoms = True
+    
     global sql
     sql         =   args.__dict__['sql-file'].read()
     tracts      =   ascii.read(tractname)['tract']
@@ -97,7 +79,7 @@ def main():
             #restart
             #if(ig<194): continue
             print('Group: %s' %ig)
-            downloadTracts(ig,tractL)
+            downloadTracts(ig,tractL, is_randoms=is_randoms)
 
     if doUnzip:
         for ig,tractL in enumerate(tracts2):
@@ -127,13 +109,16 @@ def separateTracts(ig,tractL):
         del fits
     return
 
-def downloadTracts(ig,tractL):
+def downloadTracts(ig, tractL, is_randoms=False):
     tractStr    =   map(str,tractL)
     tname       =   "'{0}'".format("', '".join(tractStr))
-    print(tname)
+    print(['', 'randoms: '][is_randoms], tname)
     job         =   None
     sqlU        =   sql.replace('{$tract}',tname)
-    outfname    =   '%s.%s'%(ig,args.out_format)
+    if not is_randoms: 
+        outfname = '%s.%s'%(ig,args.out_format)
+    else: 
+        outfname = '%s.ran.%s'%(ig,args.out_format)
     outfname    =   os.path.join(prefix,outfname)
     if os.path.exists(outfname):
         print('already have output')
@@ -187,28 +172,6 @@ def jobStatus(credential, job_id):
     job = json.load(res)
     return job
 
-def jobCancel(credential, job_id):
-    url = args.api_url + 'cancel'
-    postData = {'credential': credential, 'id': job_id}
-    httpJsonPost(url, postData)
-
-def preview(credential, sql, out):
-    url = args.api_url + 'preview'
-    catalog_job = {
-        'sql'             : sql,
-        'release_version' : release_version,
-    }
-    postData=   {'credential': credential, 'catalog_job': catalog_job}
-    res     =   httpJsonPost(url, postData)
-    result  =   json.load(res)
-
-    writer = csv.writer(out)
-    # writer.writerow(result['result']['fields'])
-    for row in result['result']['rows']:
-        writer.writerow(row)
-
-    if result['result']['count'] > len(result['result']['rows']):
-        raise QueryError('only top %d records are displayed !' % len(result['result']['rows']))
 
 def blockUntilJobFinishes(credential, job_id):
     max_interval = 0.5 * 60 # sec.
