@@ -113,7 +113,7 @@ def masking(objects):
     return _mask 
 
 
-def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=true): 
+def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=True): 
     ''' prepare hsc imaging data for target selection 
 
     args:
@@ -218,16 +218,8 @@ def random_masking(randoms):
     return: 
         boolean array that specifies the objects that are *within* the mask 
     '''
-    # same inputcount masks implemented for the imaging (this is implemented in
-    # the SQL script) 
-    _mask = (randoms['g_inputcount_value'] >= 4)
-    _mask &= (randoms['r_inputcount_value'] >= 4)
-    _mask &= (randoms['i_inputcount_value'] >= 5)
-    _mask &= (randoms['z_inputcount_value'] >= 5)
-
     # same brightstar masks implemented for the imaging 
-    _mask &= randoms['i_mask_brightstar_halo']
-    _mask &= randoms['i_mask_brightstar_ghost']
-    _mask &= randoms['i_mask_brightstar_blooming']
-
+    _mask |= randoms['i_mask_brightstar_halo']
+    _mask |= randoms['i_mask_brightstar_ghost']
+    _mask |= randoms['i_mask_brightstar_blooming']
     return _mask 

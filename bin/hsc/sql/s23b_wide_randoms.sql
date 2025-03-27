@@ -6,3 +6,9 @@ FROM
 WHERE
     -- Tract 
     r1.tract IN ({$tract})
+    
+    -- same inputcount masks implemented for the imaging 
+    AND r1.g_inputcount_value >= 4
+    AND r1.r_inputcount_value >= 4
+    AND r1.i_inputcount_value >= 5
+    AND r1.z_inputcount_value >= 5
