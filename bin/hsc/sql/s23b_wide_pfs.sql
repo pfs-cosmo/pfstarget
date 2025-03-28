@@ -215,7 +215,7 @@ SELECT
 	f1.y_pixelflags_edge,
         f1.y_pixelflags_saturatedcenter,
 	f1.y_pixelflags_interpolatedcenter,
-	f1.y_pixelflags_crcenter
+	f1.y_pixelflags_crcenter,
 	
 
 	-- Mizuki photo-z information 
@@ -231,7 +231,7 @@ SELECT
 	p1.photoz_err68_max as pz_err68_max_mizuki, 
 	p1.stellar_mass as mstar_mizuki,
 	p1.stellar_mass_err68_min as mstar_min_mizuki,
-	p1.stellar_mass_err68_max as mstar_max_mizuki,
+	p1.stellar_mass_err68_max as mstar_max_mizuki
 	
 	-- DNNZ photo-z information 
 	-- p2.photoz_mean as pz_mean_dnnz, 
@@ -263,6 +263,7 @@ FROM
 	LEFT JOIN s23b_wide.forced4 as f4 USING (object_id)
 	LEFT JOIN s23b_wide.forced5 as f5 USING (object_id)
 	LEFT JOIN s23b_wide.forced6 as f6 USING (object_id)
+        LEFT JOIN s23b_wide.photoz_mizuki as p1 USING (object_id)
 	LEFT JOIN s23b_wide.meas as m1 USING (object_id)
 	LEFT JOIN s23b_wide.meas2 as m2 USING (object_id)
 	LEFT JOIN s23b_wide.meas3 as m3 USING (object_id)
