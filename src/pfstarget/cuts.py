@@ -35,22 +35,25 @@ def isCosmology(objects, star_galaxy_cut=-0.15, magnitude_cut=22.5,
     is_galaxy = star_galaxy(objects, cut=star_galaxy_cut)
 
     # color cut
-    is_color = color_cut(objects, magnitude_cut=magnitude_cut) 
+    is_color = color_cut(objects, magnitude_cut=magnitude_cut, g_r_cut=g_r_cut, 
+                         color_slope=color_slope, color_yint=color_yint) 
 
     return ~is_mask & is_quality & is_galaxy & is_color 
 
 
-def color_cut(objects, magnitude_cut=22.5, g_r_cut=0.15, color_slope=2.0, color_yint=-0.15): 
+def color_cut(objects, magnitude_cut=22.5, g_r_cut=0.15, color_slope=2.0, color_yint=0.15): 
     ''' impose color cut to select ELG within the redshift range of 0.6 < z <
     2.4
     '''
-    # faint magnitude cut 
-    cuts = objects['I_MAG'] > magnitude_cut  # I_MAG <= 24 is hardcoded in the SQL 
-    
+    # magnitude cut 
+    cuts = objects['I_MAG'] > magnitude_cut 
+    cuts &= (objects['I_MAG'] < 24.) 
+
     # color cut 
     cuts &= (((objects['G_MAG'] - objects['R_MAG']) < g_r_cut) | # g-r cut (for 1.6 < z < 2.4 ELGs) 
              ((objects['I_MAG'] - objects['Z_MAG']) 
               > color_slope * (objects['G_MAG'] - objects['R_MAG'])- color_yint))
+
     return cuts 
 
 
@@ -58,7 +61,7 @@ def quality_cuts(objects):
     ''' quality cuts. Currently we only impose a magnitude depend cut on g-band
     magnitude error.
     '''
-    # has g, r, i, y-band magnitudes 
+    # has g, r, i, y-band magnitudes - NOTE: this is not applied in march2025
     cuts = (np.isfinite(objects['G_MAG']) & 
             np.isfinite(objects['R_MAG']) & 
             np.isfinite(objects['I_MAG']) & 
@@ -70,7 +73,7 @@ def quality_cuts(objects):
              (~objects['I_PSF_FLAG']) &
              (~objects['Z_PSF_FLAG']))
 
-    # g-band magnitude error cut
+    # g-band magnitude error cut - NOTE: in march2025, G_MAG here is the one before dust corretion
     cuts &= (objects['G_ERR'] < objects['G_MAG'] * 0.05 - 1.1) 
 
     # not skipped by deblender (this is a very very small fraction of objects)
@@ -95,7 +98,11 @@ def star_galaxy(objects, cut=-0.15):
     This cut essentially determines whether the object is extended and has
     significant light outside of the PSF profile. 
     '''
-    return (objects['I_MEAS_CMODEL_MAG'] - objects['I_MEAS_PSF_MAG'] < cut)
+    cut = objects['I_MEAS_CMODEL_MAG'] - objects['I_MEAS_PSF_MAG'] < cut
+    cut &= (~objects['I_MEAS_CMODEL_FLAG']) 
+    cut &= (~objects['I_MEAS_PSF_FLAG'])
+
+    return cut
 
 
 def masking(objects): 
@@ -146,6 +153,8 @@ def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=True):
              ('Y_ERR', 'f4'), 
              ('I_MEAS_CMODEL_MAG', 'f4'), 
              ('I_MEAS_PSF_MAG', 'f4'), 
+             ('I_MEAS_CMODEL_FLAG', bool),
+             ('I_MEAS_PSF_FLAG', bool),
              ('I_MASK_HALO', 'i'), 
              ('I_MASK_GHOST', 'i'), 
              ('I_MASK_BLOOMING', 'i'),
@@ -155,7 +164,12 @@ def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=True):
              ('Z_PSF_FLAG', bool), 
              ('DEBLEND_SKIPPED', bool), 
              ('I_APFLUX10_MAG', 'f4'),  
-             ('I_APFLUX10_FLAG', bool)
+             ('I_APFLUX10_FLAG', bool),
+             ('G_MAG_0', 'f4'), 
+             ('R_MAG_0', 'f4'), 
+             ('I_MAG_0', 'f4'), 
+             ('Z_MAG_0', 'f4'), 
+             ('Y_MAG_0', 'f4'), 
              ]
 
     objects = np.zeros(len(hsc), dtype=dtype)
@@ -170,6 +184,13 @@ def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=True):
     objects['Z_MAG'] = _z
     objects['Y_MAG'] = _y
 
+    # uncorrected grizy magnitudes
+    objects['G_MAG_0'] = hsc["g_cmodel_mag"]
+    objects['R_MAG_0'] = hsc["r_cmodel_mag"]
+    objects['I_MAG_0'] = hsc["i_cmodel_mag"]
+    objects['Z_MAG_0'] = hsc["z_cmodel_mag"]
+    objects['Y_MAG_0'] = hsc["y_cmodel_mag"]
+
     # g-band cmodel magnitude used for quality cuts 
     objects['G_ERR'] = hsc["g_cmodel_mag_err"]
     objects['R_ERR'] = hsc["r_cmodel_mag_err"]
@@ -181,6 +202,8 @@ def _prepare_hsc(hsc, dust_extinction='sfd98', release='s23b', zeropoint=True):
     objects['I_MEAS_CMODEL_MAG'] = hsc["i_meas_cmodel_mag"]
     # temporarily including typo fix this back to psf later
     objects['I_MEAS_PSF_MAG'] = hsc["i_meas_psf_mag"] 
+    objects['I_MEAS_CMODEL_FLAG'] = hsc["i_meas_cmodel_flag"]
+    objects['I_MEAS_PSF_FLAG'] = hsc["i_meas_psf_flag"]
 
     # i-band mask for bright stars
     objects['I_MASK_HALO']      = hsc["i_mask_brightstar_halo"].astype(int)

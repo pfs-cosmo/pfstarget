@@ -56,4 +56,4 @@ for infile in infiles:
 targets = Table(np.concatenate(targets)) 
 
 # write to file 
-targets.write(fout) 
+targets.write(fout, overwrite=True) 

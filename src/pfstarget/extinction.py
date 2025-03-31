@@ -81,13 +81,18 @@ def _extinction_correct(hsc, method='sfd98', release='s23b', zeropoint=True):
                                             'dat', 'desi_dust_gr_512.fits'))
 
         # get E(B-V) value based on healpixel  
-        ebv_desi = join(_hsc, desi_dust['EBV_GR', 'EBV_SFD', 'HPXPIXEL'], join_type='left', keys='HPXPIXEL') 
+        #ebv_desi = join(_hsc, desi_dust['EBV_GR', 'EBV_SFD', 'HPXPIXEL'], join_type='left', keys='HPXPIXEL') 
+        null = np.full(hp.nside2npix(nside), hp.UNSEEN)  
+        desi_full = Table()
+        desi_full['EBV_DESI'] = null.copy()
+        desi_full['EBV_DESI'][desi_dust['HPXPIXEL']] = desi_dust['EBV_GR']
+        ebv_desi = desi_full['EBV_DESI'][_hsc['HPXPIXEL']]
 
-        a_g = absorptionCoeff['g'] * ebv_desi['EBV_GR']
-        a_r = absorptionCoeff['r'] * ebv_desi['EBV_GR']
-        a_i = absorptionCoeff['i'] * ebv_desi['EBV_GR']
-        a_z = absorptionCoeff['z'] * ebv_desi['EBV_GR']
-        a_y = absorptionCoeff['y'] * ebv_desi['EBV_GR']
+        a_g = absorptionCoeff['g'] * ebv_desi#['EBV_GR']
+        a_r = absorptionCoeff['r'] * ebv_desi#['EBV_GR']
+        a_i = absorptionCoeff['i'] * ebv_desi#['EBV_GR']
+        a_z = absorptionCoeff['z'] * ebv_desi#['EBV_GR']
+        a_y = absorptionCoeff['y'] * ebv_desi#['EBV_GR']
 
         # correct magnitudes for dust extinction
         g_mag = hsc["g_cmodel_mag"] - a_g 
