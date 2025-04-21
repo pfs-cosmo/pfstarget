@@ -115,8 +115,8 @@ def masking(objects):
         boolean array that specifies the objects that are *within* the mask 
     '''
     _mask = objects['I_MASK_HALO'].astype(bool) # within bright star halo 
-    _mask &= objects['I_MASK_GHOST'].astype(bool) # larger circular radius around the bright star 
-    _mask &= objects['I_MASK_BLOOMING'].astype(bool) 
+    _mask |= objects['I_MASK_GHOST'].astype(bool) # larger circular radius around the bright star 
+    _mask |= objects['I_MASK_BLOOMING'].astype(bool) 
     return _mask 
 
 
