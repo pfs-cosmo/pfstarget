@@ -1,4 +1,6 @@
+import os
 import numpy as np 
+from astropy.table import Table, join
 
 
 def healpixelize(ra, dec, nside=128): 
@@ -18,3 +20,19 @@ def healpixelize(ra, dec, nside=128):
     hp_map[uhpix] = nhpix
 
     return hp_map 
+
+
+def patch_qa(tract, patch, release='s23b'): 
+    if release != 's23b': 
+        raise NotImplementedError("patch_qa only for S23B")
+    
+    # read pdr3_wide.patch_qa
+    fpatch = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                'dat', 'patch_qa.s23b.csv.gz')
+    patches = Table.read(fpatch, format='csv') 
+    patches = patches[~(patches['tract'].mask | patches['patch'].mask)]
+
+    # match patch to the input tracts and patches
+    _tp = Table([tract, patch], names=['tract', 'patch'])
+    mtable = join(_tp, patches, join_type='left')
+    return mtable 
