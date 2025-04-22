@@ -74,19 +74,20 @@ def _extinction_correct(hsc, method='sfd98', release='s23b', zeropoint=True):
         
         nside = 512 # healpix nside hardcoded
         _hsc = Table() 
-        _hsc['HPXPIXEL'] = hp.ang2pix(nside, hsc['ra'], hsc['dec'], lonlat=True, nest=False)
+        _hsc['HPXPIXEL'] = hp.ang2pix(nside, np.radians(90.0 - hsc['dec']), np.radians(hsc['ra']))
 
         # read dust model 
         desi_dust = Table.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                             'dat', 'desi_dust_gr_512.fits'))
 
         # get E(B-V) value based on healpixel  
-        #ebv_desi = join(_hsc, desi_dust['EBV_GR', 'EBV_SFD', 'HPXPIXEL'], join_type='left', keys='HPXPIXEL') 
         null = np.full(hp.nside2npix(nside), hp.UNSEEN)  
         desi_full = Table()
         desi_full['EBV_DESI'] = null.copy()
         desi_full['EBV_DESI'][desi_dust['HPXPIXEL']] = desi_dust['EBV_GR']
+        desi_full['EBV_SFD'][desi_dust['HPXPIXEL']] = desi_dust['EBV_SFD']
         ebv_desi = desi_full['EBV_DESI'][_hsc['HPXPIXEL']]
+        ebv_sfd = desi_full['EBV_SFD'][_hsc['HPXPIXEL']]
 
         a_g = absorptionCoeff['g'] * ebv_desi#['EBV_GR']
         a_r = absorptionCoeff['r'] * ebv_desi#['EBV_GR']
@@ -107,8 +108,8 @@ def _extinction_correct(hsc, method='sfd98', release='s23b', zeropoint=True):
             grizy_offset = _get_zeropoint_correct(hsc['tract'], hsc['patch'],
                                                   release=release) 
 
-            # calculate discrepancy between SFD and DESI 
-            debv = (ebv_desi['EBV_SFD'] - ebv_desi['EBV_GR'])
+            # calculate discrepancy between SFD and DESI
+            debv = (ebv_sfd - ebv_desi)
             delta_a_g = absorptionCoeff['g'] * debv 
             delta_a_r = absorptionCoeff['r'] * debv
             delta_a_i = absorptionCoeff['i'] * debv
