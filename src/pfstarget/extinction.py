@@ -84,6 +84,7 @@ def _extinction_correct(hsc, method='sfd98', release='s23b', zeropoint=True):
         null = np.full(hp.nside2npix(nside), hp.UNSEEN)  
         desi_full = Table()
         desi_full['EBV_DESI'] = null.copy()
+        desi_full['EBV_SFD'] = null.copy()
         desi_full['EBV_DESI'][desi_dust['HPXPIXEL']] = desi_dust['EBV_GR']
         desi_full['EBV_SFD'][desi_dust['HPXPIXEL']] = desi_dust['EBV_SFD']
         ebv_desi = desi_full['EBV_DESI'][_hsc['HPXPIXEL']]
