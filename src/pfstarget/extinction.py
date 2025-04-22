@@ -84,17 +84,14 @@ def _extinction_correct(hsc, method='sfd98', release='s23b', zeropoint=True):
         null = np.full(hp.nside2npix(nside), hp.UNSEEN)  
         desi_full = Table()
         desi_full['EBV_DESI'] = null.copy()
-        desi_full['EBV_SFD'] = null.copy()
         desi_full['EBV_DESI'][desi_dust['HPXPIXEL']] = desi_dust['EBV_GR']
-        desi_full['EBV_SFD'][desi_dust['HPXPIXEL']] = desi_dust['EBV_SFD']
         ebv_desi = desi_full['EBV_DESI'][_hsc['HPXPIXEL']]
-        ebv_sfd = desi_full['EBV_SFD'][_hsc['HPXPIXEL']]
 
-        a_g = absorptionCoeff['g'] * ebv_desi#['EBV_GR']
-        a_r = absorptionCoeff['r'] * ebv_desi#['EBV_GR']
-        a_i = absorptionCoeff['i'] * ebv_desi#['EBV_GR']
-        a_z = absorptionCoeff['z'] * ebv_desi#['EBV_GR']
-        a_y = absorptionCoeff['y'] * ebv_desi#['EBV_GR']
+        a_g = absorptionCoeff['g'] * ebv_desi
+        a_r = absorptionCoeff['r'] * ebv_desi
+        a_i = absorptionCoeff['i'] * ebv_desi
+        a_z = absorptionCoeff['z'] * ebv_desi
+        a_y = absorptionCoeff['y'] * ebv_desi
 
         # correct magnitudes for dust extinction
         g_mag = hsc["g_cmodel_mag"] - a_g 
@@ -103,26 +100,28 @@ def _extinction_correct(hsc, method='sfd98', release='s23b', zeropoint=True):
         z_mag = hsc["z_cmodel_mag"] - a_z 
         y_mag = hsc["y_cmodel_mag"] - a_y 
 
-        if zeropoint: # implemented based on Jingjing's suggestion in Issue #8
-
+        if zeropoint: 
             # get photometry zero-point offsets from wide.stellar_sequence_offset
+            # based on SFD dust model 
             grizy_offset = _get_zeropoint_correct(hsc['tract'], hsc['patch'],
                                                   release=release) 
-
-            # calculate discrepancy between SFD and DESI
-            debv = (ebv_sfd - ebv_desi)
-            delta_a_g = absorptionCoeff['g'] * debv 
-            delta_a_r = absorptionCoeff['r'] * debv
-            delta_a_i = absorptionCoeff['i'] * debv
-            delta_a_z = absorptionCoeff['z'] * debv
-            delta_a_y = absorptionCoeff['y'] * debv
+    
+            # commented out. See Issue #8 
+            # https://github.com/pfs-cosmo/pfstarget/issues/8#issuecomment-2822731773
+            ## calculate discrepancy between SFD and DESI
+            #debv = (ebv_sfd - ebv_desi)
+            #delta_a_g = absorptionCoeff['g'] * debv 
+            #delta_a_r = absorptionCoeff['r'] * debv
+            #delta_a_i = absorptionCoeff['i'] * debv
+            #delta_a_z = absorptionCoeff['z'] * debv
+            #delta_a_y = absorptionCoeff['y'] * debv
 
             # g_mag_offset (with DESI dust) = g_mag_offset + delta_a_g
-            g_mag -= (grizy_offset[0] + delta_a_g)
-            r_mag -= (grizy_offset[1] + delta_a_r)
-            i_mag -= (grizy_offset[2] + delta_a_i)
-            z_mag -= (grizy_offset[3] + delta_a_z)
-            y_mag -= (grizy_offset[4] + delta_a_y)
+            g_mag -= grizy_offset[0]# + delta_a_g)
+            r_mag -= grizy_offset[1]# + delta_a_r)
+            i_mag -= grizy_offset[2]# + delta_a_i)
+            z_mag -= grizy_offset[3]# + delta_a_z)
+            y_mag -= grizy_offset[4]# + delta_a_y)
 
     else:
         raise NotImplementedError
